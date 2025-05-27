@@ -1,9 +1,9 @@
-package tetris.logic.tetromino;
+package tetris.data.model;
 
-import static tetris.data.constants.GameConstants.TETROMINO_TYPE_COUNT;
+import static tetris.data.constants.Tetromino.TETROMINO_TYPE_COUNT;
 
 import tetris.data.constants.Tetromino;
-import tetris.logic.WELL1024a;
+import tetris.logic.core.WELL1024a;
 
 public class TetrominoPocket {
 	// --- Constant ---
@@ -24,7 +24,6 @@ public class TetrominoPocket {
         for (int i = 0; i < TETROMINO_TYPE_COUNT; i++) 
             tetrominoPocket[NEXT_POCKET][i] = Tetromino.fromOrdinal(i);
         shufflePocket(tetrominoPocket[NEXT_POCKET]);
-        advancePocket();
     }
 
     // 비공개 필드: 읽기 전용 복사본 반환 함수

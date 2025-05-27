@@ -14,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import tetris.data.constants.Tetromino;
-import tetris.data.dto.GameDataManager;
+import tetris.data.model.DataManager;
 
 public class GameRenderer extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -24,11 +24,13 @@ public class GameRenderer extends JFrame {
     private ImagePanel imagePanel;
 
     // 게임 상태 및 필드 데이터를 관리하는 클래스
-    private GameDataManager manager = new GameDataManager();
+    private final DataManager manager;
 
-    public GameRenderer() {
+    public GameRenderer(DataManager manager) {
         super("TETRIS");
 
+        this.manager = manager;
+        
         // 이미지 로딩
         ImageIcon[] tetIcon = ImageLoader.getTetrominoImage();
         for (int i = 0; i < 8; i++) {
@@ -45,7 +47,7 @@ public class GameRenderer extends JFrame {
         c.add(imagePanel);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(TETROMINO_SIZE * FIELD_X_COUNT + 400, TETROMINO_SIZE * FIELD_Y_COUNT);
+        this.setSize(TETROMINO_SIZE * FIELD_X_COUNT + 400, TETROMINO_SIZE * FIELD_Y_COUNT + 200);
         this.setVisible(true);
 
         // 키 입력 등 포커스를 바로 받도록 설정

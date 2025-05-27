@@ -1,5 +1,0 @@
-package tetris.logic.tetromino.spin;
-
-public class SpinHandler {
-
-}

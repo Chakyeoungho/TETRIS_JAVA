@@ -1,4 +1,4 @@
-package tetris.data.dto;
+package tetris.data.model;
 
 import static tetris.data.constants.GameConstants.BUFFER_ZONE;
 import static tetris.data.constants.GameConstants.FIELD_X_COUNT;
@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import tetris.data.constants.Tetromino;
 
-public class Playfield {
+public class PlayField {
     // --- Interface ---
     // 내부 인터페이스: 플레이필드(게임판)에서 특정 좌표의 셀 값을 읽는 용도
     // (y, x) 좌표를 인자로 받아 해당 위치의 값을 반환하는 읽기 전용 인터페이스
@@ -34,7 +34,7 @@ public class Playfield {
     // --- Constructor ---
     // 생성자: 객체 생성 시 플레이필드를 빈 칸(EMPTY_CELL)으로 초기화
     // Arrays.fill 메서드를 통해 각 행을 빈 칸 값으로 채움
-    public Playfield() {
+    public PlayField() {
         for (int y = 0; y < playfield.length; y++)
             Arrays.fill(playfield[y], EMPTY_CELL);
     }
@@ -44,6 +44,10 @@ public class Playfield {
     // ordinal 값을 저장하므로 나중에 해당 위치의 테트로미노 종류를 쉽게 판별 가능
     public void setCell(int y, int x, Tetromino tetromino) {
         playfield[y][x] = tetromino.ordinal();
+    }
+    
+    public void removeCell(int y, int x, Tetromino tetromino) {
+    	playfield[y][x] = EMPTY_CELL;
     }
 
     // 공개 메서드: 읽기 전용 뷰를 반환하여 외부에 안전한 접근 경로 제공

@@ -12,6 +12,7 @@ public enum Tetromino {
     Z(new Point[] { new Point(0, 0), new Point(1, 0), new Point(1, 1), new Point(2, 1) }),
     EMPTY(new Point[0]);
 
+	public static final int TETROMINO_TYPE_COUNT = values().length - 1;
     private final Point[] blocks;
 
     Tetromino(Point[] blocks) {

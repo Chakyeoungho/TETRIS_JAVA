@@ -25,23 +25,23 @@ public final class WallKickData {
     }
 
     // I 테트로미노용 회전별 오프셋
-    private static final Map<Spin, WallKickOffsets> iOffsets = Map.of(
-        Spin.S0, new WallKickOffsets(List.of(new Point(0, 0), new Point(-2, 0), new Point( 1, 0), new Point(-2,  1), new Point( 1, -2))),
-        Spin.S1, new WallKickOffsets(List.of(new Point(0, 0), new Point(-1, 0), new Point( 2, 0), new Point(-1, -2), new Point( 2,  1))),
-        Spin.S2, new WallKickOffsets(List.of(new Point(0, 0), new Point( 2, 0), new Point(-1, 0), new Point( 2, -1), new Point(-1,  2))),
-        Spin.S3, new WallKickOffsets(List.of(new Point(0, 0), new Point( 1, 0), new Point(-2, 0), new Point( 1,  2), new Point(-2, -1)))
+    private static final Map<SpinState, WallKickOffsets> iOffsets = Map.of(
+        SpinState.S0, new WallKickOffsets(List.of(new Point(0, 0), new Point(-2, 0), new Point( 1, 0), new Point(-2,  1), new Point( 1, -2))),
+        SpinState.S1, new WallKickOffsets(List.of(new Point(0, 0), new Point(-1, 0), new Point( 2, 0), new Point(-1, -2), new Point( 2,  1))),
+        SpinState.S2, new WallKickOffsets(List.of(new Point(0, 0), new Point( 2, 0), new Point(-1, 0), new Point( 2, -1), new Point(-1,  2))),
+        SpinState.S3, new WallKickOffsets(List.of(new Point(0, 0), new Point( 1, 0), new Point(-2, 0), new Point( 1,  2), new Point(-2, -1)))
     );
 
     // 공통 테트로미노(J, L, S, T, Z)용 회전별 오프셋
-    private static final Map<Spin, WallKickOffsets> commonOffsets = Map.of(
-        Spin.S0, new WallKickOffsets(List.of(new Point(0, 0), new Point(-1, 0), new Point(-1, -1), new Point(0,  2), new Point(-1,  2))),
-        Spin.S1, new WallKickOffsets(List.of(new Point(0, 0), new Point( 1, 0), new Point( 1,  1), new Point(0, -2), new Point( 1, -2))),
-        Spin.S2, new WallKickOffsets(List.of(new Point(0, 0), new Point( 1, 0), new Point( 1, -1), new Point(0,  2), new Point( 1,  2))),
-        Spin.S3, new WallKickOffsets(List.of(new Point(0, 0), new Point(-1, 0), new Point(-1,  1), new Point(0, -2), new Point(-1, -2)))
+    private static final Map<SpinState, WallKickOffsets> commonOffsets = Map.of(
+        SpinState.S0, new WallKickOffsets(List.of(new Point(0, 0), new Point(-1, 0), new Point(-1, -1), new Point(0,  2), new Point(-1,  2))),
+        SpinState.S1, new WallKickOffsets(List.of(new Point(0, 0), new Point( 1, 0), new Point( 1,  1), new Point(0, -2), new Point( 1, -2))),
+        SpinState.S2, new WallKickOffsets(List.of(new Point(0, 0), new Point( 1, 0), new Point( 1, -1), new Point(0,  2), new Point( 1,  2))),
+        SpinState.S3, new WallKickOffsets(List.of(new Point(0, 0), new Point(-1, 0), new Point(-1,  1), new Point(0, -2), new Point(-1, -2)))
     );
 
     // 테트로미노 종류별 회전 오프셋 데이터
-    private static final Map<Tetromino, Map<Spin, WallKickOffsets>> wallKickMap = Map.of(
+    private static final Map<Tetromino, Map<SpinState, WallKickOffsets>> wallKickMap = Map.of(
         Tetromino.I, iOffsets,
         Tetromino.J, commonOffsets,
         Tetromino.L, commonOffsets,
@@ -58,8 +58,8 @@ public final class WallKickData {
      * @param rotation 현재 회전 상태
      * @return List<Point> 벽 킥 오프셋 좌표 목록
      */
-    public static List<Point> getWallKickOffsets(Tetromino type, Spin rotation) {
-        Map<Spin, WallKickOffsets> rotationMap = wallKickMap.get(type);
+    public static List<Point> getWallKickOffsets(Tetromino type, SpinState rotation) {
+        Map<SpinState, WallKickOffsets> rotationMap = wallKickMap.get(type);
         if (rotationMap == null || !rotationMap.containsKey(rotation)) {
             System.err.println("Warning: Missing wall kick data for " + type + " / " + rotation);
             return List.of();
@@ -67,7 +67,7 @@ public final class WallKickData {
         return rotationMap.get(rotation).getOffsets();
     }
 
-    public static Point getWallKickOffset(Tetromino type, Spin rotation, int index) {
+    public static Point getWallKickOffset(Tetromino type, SpinState rotation, int index) {
         List<Point> offsets = getWallKickOffsets(type, rotation);
         if (offsets.isEmpty() || index < 0 || index >= offsets.size()) {
             System.err.println("Warning: Index out of bounds or no offsets for index: " + index);

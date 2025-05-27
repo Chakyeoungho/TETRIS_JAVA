@@ -1,4 +1,4 @@
-package tetris.data.dto;
+package tetris.data.model;
 
 public class GameState {
     // --- Fields ---
@@ -7,8 +7,6 @@ public class GameState {
     private int level = 1;
 
     // 점수 관련
-    private long score = 0;
-    private int clearedLines = 0;
 
     // 잠금(lock) 관련
     private int lockDelayTime = 0;
@@ -27,9 +25,11 @@ public class GameState {
 
 
     // 점수 관련
+    private long score = 0;
     public long getScore() { return score; }
     public void setScore(long score) { this.score = score; }
 
+    private int clearedLines = 0;
     public int getClearedLines() { return clearedLines; }
     public void setClearedLines(int clearedLines) { this.clearedLines = clearedLines; }
 

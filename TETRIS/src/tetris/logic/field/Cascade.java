@@ -1,5 +1,5 @@
 package tetris.logic.field;
 
-public class CollisionChecker {
+public class Cascade {
 
 }

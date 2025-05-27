@@ -1,4 +1,4 @@
-package tetris.logic;
+package tetris.logic.core;
 
 /**
  * TetrisTimer는 일정 간격으로 지정된 작업을 실행하는 타이머 스레드입니다.
