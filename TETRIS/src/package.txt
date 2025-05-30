@@ -39,13 +39,13 @@ C:.
     ¦¢  ¦¢      
     ¦¢  ¦§¦¡field
     ¦¢  ¦¢      Cascade.java
-    ¦¢  ¦¢      CollisionChecker.java
     ¦¢  ¦¢      
     ¦¢  ¦§¦¡scoring
     ¦¢  ¦¢      ScoreAction.java
     ¦¢  ¦¢      Scoring.java
     ¦¢  ¦¢      
     ¦¢  ¦¦¦¡tetromino
+    ¦¢      ¦¢  CollisionChecker.java
     ¦¢      ¦¢  Hold.java
     ¦¢      ¦¢  TetrominoGenerator.java
     ¦¢      ¦¢  TetrominoMover.java

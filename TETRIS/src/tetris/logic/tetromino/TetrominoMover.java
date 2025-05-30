@@ -8,7 +8,7 @@ import tetris.data.constants.Tetromino;
 import tetris.data.model.DataManager;
 
 public class TetrominoMover {
-    private final DataManager manager;
+    private final DataManager gameData;
     private final CollisionChecker checker;
     
     /**
@@ -17,8 +17,8 @@ public class TetrominoMover {
      */
     
     // TODO: 임시로 매개변수 설정해둠 테스트용
-    public TetrominoMover(DataManager manager, CollisionChecker checker) {
-        this.manager = manager;
+    public TetrominoMover(DataManager gameData, CollisionChecker checker) {
+        this.gameData = gameData;
         this.checker = checker;
     }
 
@@ -27,7 +27,7 @@ public class TetrominoMover {
      * @param value 필드에 설정할 Tetromino 값 (예: EMPTY 또는 현재 테트로미노)
      */
     private void updateTetrominoOnField(Tetromino value) {
-        var state = manager.getTetrominoState();
+        var state = gameData.getTetrominoState();
         var coords = state.getTetrominoCoords();
         var offset = state.getTetrominoOffset();
 
@@ -37,7 +37,7 @@ public class TetrominoMover {
         for (int i = 0; i < 4; i++) {
             int x = coords[i].x;
             int y = coords[i].y;
-            manager.setCell(y + offsetY, x + offsetX, value);
+            gameData.setCell(y + offsetY, x + offsetX, value);
         }
     }
 
@@ -55,7 +55,7 @@ public class TetrominoMover {
      * @param dy y 방향 이동량
      */
     private void translateOffset(int dx, int dy) {
-        var state = manager.getTetrominoState();
+        var state = gameData.getTetrominoState();
         var offset = state.getTetrominoOffset();
         state.setTetrominoOffset(new Point(offset.x + dx, offset.y + dy));
     }
@@ -64,7 +64,7 @@ public class TetrominoMover {
      * 현재 테트로미노를 필드에 그린다.
      */
     private void setTetrominoData() {
-        updateTetrominoOnField(manager.getTetrominoState().getCurrentTetromino());
+        updateTetrominoOnField(gameData.getTetrominoState().getCurrentTetromino());
     }
     
     /**
@@ -73,8 +73,8 @@ public class TetrominoMover {
      * @param dy y 방향 이동량
      */
     private boolean moveAndUpdate(int dx, int dy) {
-        Point[] coords = manager.getTetrominoState().getTetrominoCoords();
-        Point offset = manager.getTetrominoState().getTetrominoOffset();
+        Point[] coords = gameData.getTetrominoState().getTetrominoCoords();
+        Point offset = gameData.getTetrominoState().getTetrominoOffset();
         Point testOffset = new Point(offset.x + dx, offset.y + dy);
         
         removePreviousTetrominoData();

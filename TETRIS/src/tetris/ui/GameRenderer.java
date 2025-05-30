@@ -47,7 +47,7 @@ public class GameRenderer extends JFrame {
         c.add(imagePanel);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(TETROMINO_SIZE * FIELD_X_COUNT + 400, TETROMINO_SIZE * FIELD_Y_COUNT + 200);
+        this.setSize(TETROMINO_SIZE * FIELD_X_COUNT + 100, TETROMINO_SIZE * FIELD_Y_COUNT + 40);
         this.setVisible(true);
 
         // 키 입력 등 포커스를 바로 받도록 설정

@@ -5,7 +5,7 @@ public final class GameConstants {
         throw new AssertionError("Cannot instantiate GameConstants");
     }
 
-    public static final int TETROMINO_SIZE	= 35;	// 블록 크기 (픽셀)
+    public static final int TETROMINO_SIZE	= 30;	// 블록 크기 (픽셀)
     public static final int FIELD_X_COUNT	= 10;	// 필드 가로 블록 개수
 	public static final int LINE_INFO		= 1;	// 각 줄에 대한 정보
     public static final int FIELD_Y_COUNT	= 20;	// 필드 세로 블록 개수

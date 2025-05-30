@@ -8,21 +8,24 @@ import tetris.logic.tetromino.spin.SpinState;
 public class TetrominoState {
     // --- Fields ---
     // 현재 조작 중인 테트로미노 정보
-    private Tetromino currentTetromino;
+    private Tetromino currentTetromino; // 필요
+    private SpinState currentSpinState; // 필요
+    private byte lastScoreAction; // ?
 
     // 홀드 관련
+    private Tetromino heldTetromino; // ?
+    private boolean isHoldUsed; // ?
 
     // 위치 및 미리보기
-    private final Tetromino[] tetrominoQueue = new Tetromino[6];
-    private Point tetrominoOffset = new Point();
-    private Point[] tetrominoCoords = new Point[4];
+    private final Tetromino[] tetrominoQueue = new Tetromino[6]; //
+    private Point tetrominoOffset = new Point(); // 필요
+    private Point[] tetrominoCoords = new Point[4]; // 필요
 
     // --- 생성자 ---
     TetrominoState() {
         for (int i = 0; i < tetrominoCoords.length; i++) {
             tetrominoCoords[i] = new Point();
         }
-        this.currentRotationState = SpinState.S0;
         this.currentTetromino = Tetromino.EMPTY;
     }
 
@@ -31,20 +34,16 @@ public class TetrominoState {
     public Tetromino getCurrentTetromino() { return currentTetromino; }
     public void setCurrentTetromino(Tetromino currTetromino) { this.currentTetromino = currTetromino; }
 
-    private SpinState currentRotationState;
-    public SpinState getCurrentRotationState() { return currentRotationState; }
-    public void setRotationState(SpinState currentRotationState) { this.currentRotationState = currentRotationState; }
+    public SpinState getCurrentSpinState() { return currentSpinState; }
+    public void setSpinState(SpinState currentRotationState) { this.currentSpinState = currentRotationState; }
 
-    private byte lastScoreAction;
     public byte getLastScoreAction() { return lastScoreAction; }
     public void setLastScoreAction(byte lastScoreAction) { this.lastScoreAction = lastScoreAction; }
 
     // 홀드 관련
-    private Tetromino heldTetromino;
     public Tetromino getHeldTetromino() { return heldTetromino; }
     public void setHeldTetromino(Tetromino heldTetromino) { this.heldTetromino = heldTetromino; }
 
-    private boolean isHoldUsed;
     public boolean isHoldUsed() { return isHoldUsed; }
     public void setHoldUsed(boolean isHoldUsed) { this.isHoldUsed = isHoldUsed; }
 

@@ -5,9 +5,9 @@ import tetris.data.model.DataManager;
 
 public class Hold {
 	private Tetromino hold;
-	private final DataManager manager;
+	private final DataManager gameData;
 	
-	Hold(DataManager manager) {
-		this.manager = manager;
+	Hold(DataManager gameData) {
+		this.gameData = gameData;
 	}
 }
