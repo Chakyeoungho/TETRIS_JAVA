@@ -1,9 +1,8 @@
-package tetris.data.model;
+package tetris.data.dto;
 
 import static tetris.data.constants.GameConstants.BUFFER_ZONE;
 import static tetris.data.constants.GameConstants.FIELD_X_COUNT;
 import static tetris.data.constants.GameConstants.FIELD_Y_COUNT;
-import static tetris.data.constants.GameConstants.LINE_INFO;
 
 import java.util.Arrays;
 
@@ -25,7 +24,7 @@ public class PlayField {
     // 인스턴스 필드: 플레이필드 2차원 배열
     // 필드 높이와 너비에 버퍼 및 라인 정보 상수를 더해 배열 크기 지정
     // 각 칸은 int로 테트로미노 종류 또는 빈 칸 상태를 저장
-    private final int[][] playfield = new int[FIELD_Y_COUNT + BUFFER_ZONE][FIELD_X_COUNT + LINE_INFO];
+    private final int[][] playfield = new int[FIELD_Y_COUNT + BUFFER_ZONE][FIELD_X_COUNT];
 
     // 읽기 전용 람다: 외부에서 플레이필드 데이터를 읽기만 할 수 있도록 제한된 뷰 제공
     // 내부 배열을 직접 노출하지 않고 안전하게 데이터를 조회 가능

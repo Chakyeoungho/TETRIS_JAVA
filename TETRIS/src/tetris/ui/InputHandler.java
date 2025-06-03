@@ -1,28 +1,67 @@
 package tetris.ui;
 
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
-public class InputHandler implements KeyListener {
-    private final Set<Integer> pressedKeys = Collections.synchronizedSet(new HashSet<>());
+import tetris.data.dto.DataManager;
+import tetris.logic.TetrisEngine;
 
-    public boolean isKeyPressed(int keyCode) {
-        return pressedKeys.contains(keyCode);
+public class InputHandler extends KeyAdapter {
+	private final DataManager gameData;
+    private final TetrisEngine gameEngine;
+    
+	private boolean isDownPressed = false;
+    
+    public InputHandler(DataManager gameData, TetrisEngine gameEngine) {
+    	this.gameData = gameData;
+        this.gameEngine = gameEngine;
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        pressedKeys.add(e.getKeyCode());
-    }
+        int keyCode = e.getKeyCode();
 
+        switch (keyCode) {
+            case KeyEvent.VK_LEFT:
+                gameEngine.getTetrominoMover().left();
+                break;
+            case KeyEvent.VK_RIGHT:
+                gameEngine.getTetrominoMover().right();
+                break;
+            case KeyEvent.VK_UP: case KeyEvent.VK_X:
+                gameEngine.getSpin().spin(true);
+                break;
+            case KeyEvent.VK_CONTROL: case KeyEvent.VK_Z:
+                gameEngine.getSpin().spin(false);
+                break;
+            case KeyEvent.VK_DOWN:
+            	if (isDownPressed) break;
+            	isDownPressed = true;
+            	gameEngine.setIntervalNanos(gameEngine.getDropTime(gameData.getGameState().getLevel()) / 20);
+                break;
+            case KeyEvent.VK_SPACE:
+                gameEngine.getTetrominoMover().hardDrop();
+                gameEngine.getTetrominoGenerator().generateTetromino();
+            	gameEngine.setIntervalNanos(gameEngine.getDropTime(gameData.getGameState().getLevel()));
+                break;
+            case KeyEvent.VK_C: case KeyEvent.VK_SHIFT:
+                gameEngine.hold();
+                break;
+            case KeyEvent.VK_ESCAPE: case KeyEvent.VK_F1:
+                gameEngine.pauseToggle();
+                break;
+            default:
+                break;
+        }
+
+        gameEngine.getGameRenderer().refreshScreen();
+    }
+    
     @Override
     public void keyReleased(KeyEvent e) {
-        pressedKeys.remove(e.getKeyCode());
+    	if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+        	isDownPressed = false;
+        	gameEngine.setIntervalNanos(gameEngine.getDropTime(gameData.getGameState().getLevel()));
+    	}
     }
-
-    @Override
-    public void keyTyped(KeyEvent e) {}
 }

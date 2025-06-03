@@ -1,4 +1,4 @@
-package tetris.data.model;
+package tetris.data.dto;
 
 import java.awt.Point;
 
@@ -8,18 +8,14 @@ import tetris.logic.tetromino.spin.SpinState;
 public class TetrominoState {
     // --- Fields ---
     // 현재 조작 중인 테트로미노 정보
-    private Tetromino currentTetromino; // 필요
-    private SpinState currentSpinState; // 필요
+    private Tetromino currentTetromino;
+    private SpinState currentSpinState;
     private byte lastScoreAction; // ?
 
-    // 홀드 관련
-    private Tetromino heldTetromino; // ?
-    private boolean isHoldUsed; // ?
-
     // 위치 및 미리보기
-    private final Tetromino[] tetrominoQueue = new Tetromino[6]; //
-    private Point tetrominoOffset = new Point(); // 필요
-    private Point[] tetrominoCoords = new Point[4]; // 필요
+    private final Tetromino[] tetrominoQueue = new Tetromino[6]; // ?
+    private Point tetrominoOffset = new Point();
+    private Point[] tetrominoCoords = new Point[4];
 
     // --- 생성자 ---
     TetrominoState() {
@@ -32,20 +28,19 @@ public class TetrominoState {
     // --- Getters & Setters ---
     // 현재 조작 중인 테트로미노 정보
     public Tetromino getCurrentTetromino() { return currentTetromino; }
-    public void setCurrentTetromino(Tetromino currTetromino) { this.currentTetromino = currTetromino; }
+    public void setCurrentTetromino(Tetromino tetromino) {
+    	// Heisenbug 오휴 발생 가능! 현제 테트로미노가 EMPTY가 아닌데 EMPTY로 판정 가능
+        if (tetromino == Tetromino.EMPTY)
+            throw new IllegalStateException("Current tetromino is EMPTY. This should never happen.");
+        this.currentTetromino = tetromino;
+    }
+
 
     public SpinState getCurrentSpinState() { return currentSpinState; }
     public void setSpinState(SpinState currentRotationState) { this.currentSpinState = currentRotationState; }
 
     public byte getLastScoreAction() { return lastScoreAction; }
     public void setLastScoreAction(byte lastScoreAction) { this.lastScoreAction = lastScoreAction; }
-
-    // 홀드 관련
-    public Tetromino getHeldTetromino() { return heldTetromino; }
-    public void setHeldTetromino(Tetromino heldTetromino) { this.heldTetromino = heldTetromino; }
-
-    public boolean isHoldUsed() { return isHoldUsed; }
-    public void setHoldUsed(boolean isHoldUsed) { this.isHoldUsed = isHoldUsed; }
 
     // 위치 및 미리보기
     public Point getTetrominoOffset() { return (Point) tetrominoOffset.clone(); }

@@ -1,4 +1,4 @@
-package tetris.data.model;
+package tetris.data.dto;
 
 import static tetris.data.constants.Tetromino.TETROMINO_TYPE_COUNT;
 

@@ -1,105 +1,105 @@
 package tetris.logic.tetromino;
 
-import static tetris.data.constants.Tetromino.EMPTY;
+import static tetris.data.constants.GameConstants.BUFFER_ZONE;
+import static tetris.data.constants.GameConstants.GAME_OVER;
 
 import java.awt.Point;
 
 import tetris.data.constants.Tetromino;
-import tetris.data.model.DataManager;
+import tetris.data.dto.DataManager;
+import tetris.logic.TetrisEngine;
 
 public class TetrominoMover {
     private final DataManager gameData;
+    private final TetrisEngine gameEngine;
     private final CollisionChecker checker;
-    
-    /**
-     * TetrominoMover 생성자.
-     * DataManager와 PlayField 객체를 받아 초기화한다.
-     */
-    
-    // TODO: 임시로 매개변수 설정해둠 테스트용
-    public TetrominoMover(DataManager gameData, CollisionChecker checker) {
+
+    public TetrominoMover(DataManager gameData, TetrisEngine gameEngine) {
         this.gameData = gameData;
-        this.checker = checker;
+        this.gameEngine = gameEngine;
+        this.checker = gameEngine.getCollisionChecker();
     }
 
-    /**
-     * 현재 테트로미노 위치를 기준으로 필드 셀을 지정된 값(value)으로 업데이트한다.
-     * @param value 필드에 설정할 Tetromino 값 (예: EMPTY 또는 현재 테트로미노)
-     */
-    private void updateTetrominoOnField(Tetromino value) {
-        var state = gameData.getTetrominoState();
-        var coords = state.getTetrominoCoords();
-        var offset = state.getTetrominoOffset();
+    // ==========================
+    // Public Movement Methods
+    // ==========================
 
-        int offsetX = offset.x;
-        int offsetY = offset.y;
+    public synchronized boolean drop() { return move(0, 1); }
+    public synchronized boolean left() { return move(-1, 0); }
+    public synchronized boolean right() { return move(1, 0); }
+    public synchronized void hardDrop() {
+        Point dropOffset = getHardDropOffset();
+        gameData.getTetrominoState().setTetrominoOffset(dropOffset);
+        lockTetromino();
+    }
+
+    public void lockTetromino() {
+    	var cascadeHandler = gameEngine.getCascadeHandler();
+        Point[] coords = gameData.getTetrominoState().getTetrominoCoords();
+        Point offset = gameData.getTetrominoState().getTetrominoOffset();
+
+        placeTetrominoOnField(coords, offset);
+        updateRowBlockCounts(coords, offset);
+        cascadeHandler.cascade();
         
-        for (int i = 0; i < 4; i++) {
-            int x = coords[i].x;
-            int y = coords[i].y;
-            gameData.setCell(y + offsetY, x + offsetX, value);
-        }
+        if (gameData.getGameState().getRowBlockCount()[BUFFER_ZONE - 2] > 0) gameData.getGameState().setGameStateCode(GAME_OVER);
     }
 
-    /**
-     * 이전에 그려진 테트로미노를 필드에서 지운다.
-     */
-    private void removePreviousTetrominoData() {
-        updateTetrominoOnField(EMPTY);
+    public Point getHardDropOffset() {
+        Point[] coords = gameData.getTetrominoState().getTetrominoCoords();
+        Point offset = gameData.getTetrominoState().getTetrominoOffset();
+        Point testOffset = new Point(offset);
+
+        while (true) {
+            testOffset.y++;
+            if (!checker.canPlace(coords, testOffset)) {
+                testOffset.y--;
+                break;
+            }
+        }
+        return testOffset;
     }
-    
-    /**
-     * 테트로미노 오프셋을 dx, dy 만큼 이동시킨다.
-     * 새로운 Point 객체를 생성하여 불변성을 유지한다.
-     * @param dx x 방향 이동량
-     * @param dy y 방향 이동량
-     */
-    private void translateOffset(int dx, int dy) {
-        var state = gameData.getTetrominoState();
-        var offset = state.getTetrominoOffset();
-        state.setTetrominoOffset(new Point(offset.x + dx, offset.y + dy));
-    }
-    
-    /**
-     * 현재 테트로미노를 필드에 그린다.
-     */
-    private void setTetrominoData() {
-        updateTetrominoOnField(gameData.getTetrominoState().getCurrentTetromino());
-    }
-    
-    /**
-     * 이전 위치를 지우고 오프셋을 이동한 후, 새로운 위치에 테트로미노를 그린다.
-     * @param dx x 방향 이동량
-     * @param dy y 방향 이동량
-     */
-    private boolean moveAndUpdate(int dx, int dy) {
+
+    // ==========================
+    // Private Movement Logic
+    // ==========================
+
+    private boolean move(int dx, int dy) {
         Point[] coords = gameData.getTetrominoState().getTetrominoCoords();
         Point offset = gameData.getTetrominoState().getTetrominoOffset();
         Point testOffset = new Point(offset.x + dx, offset.y + dy);
-        
-        removePreviousTetrominoData();
+
         if (!checker.canPlace(coords, testOffset)) {
-            setTetrominoData();
             return false;
         }
+
         translateOffset(dx, dy);
-        setTetrominoData();
-        
         return true;
     }
 
-    /** 테트로미노를 한 칸 아래로 이동시킨다. */
-    public boolean drop() {
-        return moveAndUpdate(0, 1);
+    private void translateOffset(int dx, int dy) {
+        var state = gameData.getTetrominoState();
+        Point offset = state.getTetrominoOffset();
+        state.setTetrominoOffset(new Point(offset.x + dx, offset.y + dy));
     }
 
-    /** 테트로미노를 왼쪽으로 한 칸 이동시킨다. */
-    public boolean left() {
-        return moveAndUpdate(-1, 0);
+    // ==========================
+    // Tetromino Placement Logic
+    // ==========================
+
+    private void placeTetrominoOnField(Point[] coords, Point offset) {
+        Tetromino current = gameData.getTetrominoState().getCurrentTetromino();
+        for (Point coord : coords) {
+            int x = coord.x + offset.x;
+            int y = coord.y + offset.y;
+            gameData.setCell(y, x, current);
+        }
     }
 
-    /** 테트로미노를 오른쪽으로 한 칸 이동시킨다. */
-    public boolean right() {
-        return moveAndUpdate(1, 0);
+    private void updateRowBlockCounts(Point[] coords, Point offset) {
+        for (Point coord : coords) {
+            int y = coord.y + offset.y;
+            gameData.getGameState().incrementRowBlockCount(y);
+        }
     }
 }

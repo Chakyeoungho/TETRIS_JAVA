@@ -1,4 +1,4 @@
-package tetris.data.model;
+package tetris.data.dto;
 
 import tetris.data.constants.Tetromino;
 import tetris.logic.tetromino.CollisionChecker.CellReader;

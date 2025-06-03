@@ -66,13 +66,4 @@ public final class WallKickData {
         }
         return rotationMap.get(rotation).getOffsets();
     }
-
-//    public static Point getWallKickOffset(Tetromino type, SpinState rotation, int index) {
-//        List<Point> offsets = getWallKickOffsets(type, rotation);
-//        if (offsets.isEmpty() || index < 0 || index >= offsets.size()) {
-//            System.err.println("Warning: Index out of bounds or no offsets for index: " + index);
-//            return null;
-//        }
-//        return offsets.get(index);
-//    }
 }
