@@ -12,6 +12,7 @@ public class ScoreManager {
     private int totalClearedLine = 0;
     private boolean isSoftDrop = false;
     private boolean isLastActionSpin = false;
+    private byte lastScoreAction;
 
 	public ScoreManager(DataManager gameData, TetrisEngine gameEngine) {
 		this.gameData = gameData;
@@ -19,12 +20,13 @@ public class ScoreManager {
 	}
 	
 	public synchronized void updateScore(ScoreAction action, int clearedLine) {
+		if (action == null) return; // TODO
 		switch(action) {
 		case HARD_DROP:
 			increaseScore(gameEngine.getTetrominoMover().getHardDroppedCells() * ScoreAction.HARD_DROP.getBaseScore());
 			break;
 		default:
-			increaseScore(action.getBaseScore() * level);
+			//increaseScore(action.getBaseScore() * level);
 			break;
 		}
 	}
@@ -43,4 +45,7 @@ public class ScoreManager {
 	public boolean isSoftDrop() { return isSoftDrop; }
 	public void softDropping() { isSoftDrop = true; }
 	public void finishSoftDropping() { isSoftDrop = false; }
+	
+    public byte getLastScoreAction() { return lastScoreAction; }
+    public void setLastScoreAction(byte lastScoreAction) { this.lastScoreAction = lastScoreAction; }
 }

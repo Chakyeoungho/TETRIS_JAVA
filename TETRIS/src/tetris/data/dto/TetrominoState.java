@@ -10,13 +10,9 @@ public class TetrominoState {
     // 현재 조작 중인 테트로미노 정보
     private Tetromino currentTetromino;
     private SpinState currentSpinState;
-    private byte lastScoreAction; // ?
-
-    // 락딜레이 초기화 카운터
-	private int lockDelayMoveCounter = 0;
 
     // 위치 및 미리보기
-    private final Tetromino[] tetrominoQueue = new Tetromino[6]; // ?
+    private final Tetromino[] tetrominoQueue = new Tetromino[6];
     private Point tetrominoOffset = new Point();
     private Point[] tetrominoCoords = new Point[4];
 
@@ -41,15 +37,6 @@ public class TetrominoState {
 
     public SpinState getCurrentSpinState() { return currentSpinState; }
     public void setSpinState(SpinState currentRotationState) { this.currentSpinState = currentRotationState; }
-
-    public byte getLastScoreAction() { return lastScoreAction; }
-    public void setLastScoreAction(byte lastScoreAction) { this.lastScoreAction = lastScoreAction; }
-
-
-    // 락딜레이 초기화 카운터
-    public int getLockDelayCounter() { return lockDelayMoveCounter; }
-    public void increaseLockDelayCounter() { lockDelayMoveCounter++; }
-    public void resetLockDelayCounter() { lockDelayMoveCounter = 0; }
     
     // 위치 및 미리보기
     public Point getTetrominoOffset() { return (Point) tetrominoOffset.clone(); }

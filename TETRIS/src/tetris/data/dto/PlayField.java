@@ -29,7 +29,21 @@ public class PlayField {
     // 읽기 전용 람다: 외부에서 플레이필드 데이터를 읽기만 할 수 있도록 제한된 뷰 제공
     // 내부 배열을 직접 노출하지 않고 안전하게 데이터를 조회 가능
     private final PlayfieldReader readOnlyView = (y, x) -> playfield[y][x];
+    
+    // --- 줄 정보 ---
+    private int[] rowBlockCounts = new int[BUFFER_ZONE + FIELD_Y_COUNT];
 
+    // --- 줄 정보 ---
+    public int[] getRowBlockCount() { return rowBlockCounts; }
+    public void incrementRowBlockCount(int y) { rowBlockCounts[y]++; }
+    public void shiftDownRowBlockCount(int y, int clearedLine) {
+        int targetIndex = y + clearedLine;
+        if (targetIndex >= 0 && targetIndex < rowBlockCounts.length) {
+            rowBlockCounts[targetIndex] = rowBlockCounts[y];
+            rowBlockCounts[y] = 0;
+        }
+    }
+    
     // --- Constructor ---
     // 생성자: 객체 생성 시 플레이필드를 빈 칸(EMPTY_CELL)으로 초기화
     // Arrays.fill 메서드를 통해 각 행을 빈 칸 값으로 채움

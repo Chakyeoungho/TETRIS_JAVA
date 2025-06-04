@@ -8,14 +8,17 @@ import java.awt.Point;
 import tetris.data.constants.Tetromino;
 import tetris.data.dto.DataManager;
 import tetris.data.dto.TetrominoState;
+import tetris.logic.TetrisEngine;
 import tetris.logic.tetromino.spin.SpinState;
 
 public class TetrominoGenerator {
     private byte currentPocketIndex = (byte) (TETROMINO_TYPE_COUNT);
     private final DataManager gameData;
+    private final TetrisEngine gameEngine;
 
-    public TetrominoGenerator(DataManager gameData) {
+    public TetrominoGenerator(DataManager gameData, TetrisEngine gameEngine) {
         this.gameData = gameData;
+        this.gameEngine = gameEngine;
     }
 
     private void advancePocketIndex() {
@@ -47,10 +50,11 @@ public class TetrominoGenerator {
         tetState.setTetrominoOffset(new Point(3, BUFFER_ZONE - 1));
     }
 
-    private void initData() {
+    public void initData() {
         advancePocketIndex();
         updateCurrentTetromino();
         gameData.getTetrominoState().setSpinState(SpinState.S0);
+        gameEngine.getHoldHandler().resetIsHoldUsed();
     }
 
     public synchronized void generateTetromino() {

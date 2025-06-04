@@ -33,6 +33,7 @@ public class TetrisEngine {
     private final LockDelayTimer lockDelay;
 
     private volatile boolean paused = false;
+	private volatile int lockDelayMoveCounter = 0;
 
     public TetrisEngine(DataManager gameData) {
         this.gameData = gameData;
@@ -41,7 +42,7 @@ public class TetrisEngine {
         this.tetrominoMover = new TetrominoMover(gameData, this);
         this.spin = new Spin(gameData, collisionChecker);
         this.hold = new HoldHandler(gameData, this);
-        this.tetrominoGenerator = new TetrominoGenerator(gameData);
+        this.tetrominoGenerator = new TetrominoGenerator(gameData, this);
         this.cascade = new CascadeHandler(gameData, this);
         this.gameRenderer = new GameRenderer(gameData, this);
         this.gameScore = new ScoreManager(gameData, this);
@@ -157,6 +158,11 @@ public class TetrisEngine {
     public boolean isMainTimerRunning() {
         return gameTimer != null && gameTimer.isRunning();
     }
+
+    // 락딜레이 초기화 카운터
+    public int getLockDelayCounter() { return lockDelayMoveCounter; }
+    public void increaseLockDelayCounter() { lockDelayMoveCounter++; }
+    public void resetLockDelayCounter() { lockDelayMoveCounter = 0; }
 
     // --- Getters ---
     public DataManager getDataManager() { return gameData; }

@@ -44,10 +44,10 @@ public class TetrominoMover {
 		updateRowBlockCounts(coords, offset);
 		cascadeHandler.cascade();
 
-		if (gameData.getGameState().getRowBlockCount()[BUFFER_ZONE - 2] > 0)
+		if (gameData.getPlayField().getRowBlockCount()[BUFFER_ZONE - 2] > 0)
 			gameData.getGameState().setGameStateCode(GAME_OVER);
 		
-		gameData.getTetrominoState().resetLockDelayCounter();
+		gameEngine.resetLockDelayCounter();
 	}
 
 	public Point getHardDropOffset() {
@@ -113,7 +113,7 @@ public class TetrominoMover {
 	private void updateRowBlockCounts(Point[] coords, Point offset) {
 		for (Point coord : coords) {
 			int y = coord.y + offset.y;
-			gameData.getGameState().incrementRowBlockCount(y);
+			gameData.getPlayField().incrementRowBlockCount(y);
 		}
 	}
 }

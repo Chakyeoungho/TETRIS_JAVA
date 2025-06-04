@@ -127,7 +127,7 @@ public class GameRenderer extends JFrame {
 				System.out.println("Ghost Offset: " + ghostOffset);
 				System.out.println("Current Offset: " + currentOffset);
 				for (int y = BUFFER_ZONE; y < FIELD_Y_COUNT + BUFFER_ZONE; y++)
-					System.out.print(gameData.getGameState().getRowBlockCount()[y]);
+					System.out.print(gameData.getPlayField().getRowBlockCount()[y]);
 				System.out.println();
 				for (Point p : coords) {
 					System.out.printf("Block coord: (%d, %d)\n", p.x, p.y);

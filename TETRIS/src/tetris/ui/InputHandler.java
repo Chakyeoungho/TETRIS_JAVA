@@ -83,10 +83,9 @@ public class InputHandler extends KeyAdapter {
 	}
 
 	public void resetLockDelayCounter() {
-		TetrominoState tetState = gameData.getTetrominoState();
-		if (tetState.getLockDelayCounter() < 15 && gameEngine.isLockDelayRunning() && !gameEngine.getTetrominoMover().canMove(0, 1)) {
+		if (gameEngine.getLockDelayCounter() < 15 && gameEngine.isLockDelayRunning() && !gameEngine.getTetrominoMover().canMove(0, 1)) {
 			gameEngine.resetLockDelay();
-			tetState.increaseLockDelayCounter();
+			gameEngine.increaseLockDelayCounter();
 		}
 	}
 }

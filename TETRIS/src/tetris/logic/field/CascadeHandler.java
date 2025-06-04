@@ -7,7 +7,7 @@ import static tetris.data.constants.Tetromino.EMPTY;
 
 import tetris.data.constants.Tetromino;
 import tetris.data.dto.DataManager;
-import tetris.data.dto.GameState;
+import tetris.data.dto.PlayField;
 import tetris.logic.TetrisEngine;
 import tetris.logic.scoring.ScoreManager;
 
@@ -23,20 +23,20 @@ public class CascadeHandler {
 	}
 
 	public synchronized void cascade() {
-		GameState gameState = gameData.getGameState();
+		PlayField fieldData = gameData.getPlayField();
 		ScoreManager gameScore = gameEngine.getScoreManager();
 		int clearedLine = 0;
 		int y = TOTAL_Y_SIZE - 1;
 
-		while (y >= 0 && gameState.getRowBlockCount()[y] != 0) {
-			if (gameState.getRowBlockCount()[y] == FIELD_X_COUNT) {
+		while (y >= 0 && fieldData.getRowBlockCount()[y] != 0) {
+			if (fieldData.getRowBlockCount()[y] == FIELD_X_COUNT) {
 				clearedLine++;
 				gameEngine.getScoreManager().increaseTotalClearedLine();
 			} else {
 				if (y + clearedLine < TOTAL_Y_SIZE && clearedLine > 0) {
 					for (int x = 0; x < FIELD_X_COUNT; x++)
 						gameData.setCell(y + clearedLine, x, Tetromino.fromOrdinal(gameData.getCell(y, x)));
-					gameState.shiftDownRowBlockCount(y, clearedLine);
+					fieldData.shiftDownRowBlockCount(y, clearedLine);
 				}
 			}
 			y--;
@@ -46,7 +46,7 @@ public class CascadeHandler {
 			for (int i = y; i > y - clearedLine; i--) {
 				for (int x = 0; x < FIELD_X_COUNT; x++)
 					gameData.setCell(i + clearedLine, x, EMPTY);
-				gameData.getGameState().shiftDownRowBlockCount(i, clearedLine);
+				gameData.getPlayField().shiftDownRowBlockCount(i, clearedLine);
 			}
 		}
 
