@@ -9,6 +9,7 @@ import tetris.data.constants.Tetromino;
 import tetris.data.dto.DataManager;
 import tetris.data.dto.GameState;
 import tetris.logic.TetrisEngine;
+import tetris.logic.scoring.ScoreManager;
 
 public class CascadeHandler {
 	private final DataManager gameData;
@@ -22,19 +23,20 @@ public class CascadeHandler {
 	}
 
 	public synchronized void cascade() {
-		GameState state = gameData.getGameState();
+		GameState gameState = gameData.getGameState();
+		ScoreManager gameScore = gameEngine.getScoreManager();
 		int clearedLine = 0;
 		int y = TOTAL_Y_SIZE - 1;
 
-		while (y >= 0 && state.getRowBlockCount()[y] != 0) {
-			if (state.getRowBlockCount()[y] == FIELD_X_COUNT) {
+		while (y >= 0 && gameState.getRowBlockCount()[y] != 0) {
+			if (gameState.getRowBlockCount()[y] == FIELD_X_COUNT) {
 				clearedLine++;
-				state.increaseTotalClearedLine();
+				gameEngine.getScoreManager().increaseTotalClearedLine();
 			} else {
 				if (y + clearedLine < TOTAL_Y_SIZE && clearedLine > 0) {
 					for (int x = 0; x < FIELD_X_COUNT; x++)
 						gameData.setCell(y + clearedLine, x, Tetromino.fromOrdinal(gameData.getCell(y, x)));
-					state.shiftDownRowBlockCount(y, clearedLine);
+					gameState.shiftDownRowBlockCount(y, clearedLine);
 				}
 			}
 			y--;
@@ -48,17 +50,19 @@ public class CascadeHandler {
 			}
 		}
 
-		int totalClearedLine = gameData.getGameState().getTotalClearedLine();
-		
-		if (clearedLine > 0) {
-		    int preLevel = state.getLevel();  // 먼저 저장
-		    int currentLevel = Math.min(totalClearedLine / 10 + 1, 15);
-		    gameData.getGameState().setLevel(currentLevel);
+		int totalClearedLine = gameEngine.getScoreManager().getTotalClearedLine();
 
-		    if (currentLevel > preLevel) {
-		        long nextTime = gameEngine.getDropTime(currentLevel);
-		        gameEngine.setIntervalNanos(nextTime);
-		    }
+		if (clearedLine > 0) {
+			int preLevel = gameScore.getLevel(); // 먼저 저장
+			int currentLevel = Math.min(totalClearedLine / 10 + 1, 15);
+			gameScore.setLevel(currentLevel);
+
+			if (currentLevel > preLevel) {
+				long nextTime = gameEngine.getDropTime(currentLevel);
+				gameEngine.setIntervalNanos(nextTime);
+			}
 		}
+		
+		gameEngine.getScoreManager().updateScore(null, clearedLine);
 	}
 }

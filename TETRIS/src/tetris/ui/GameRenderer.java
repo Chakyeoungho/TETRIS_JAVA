@@ -23,163 +23,158 @@ import tetris.data.dto.DataManager;
 import tetris.logic.TetrisEngine;
 
 public class GameRenderer extends JFrame {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private final DataManager gameData;
-    private final TetrisEngine gameEngine;
+	private final DataManager gameData;
+	private final TetrisEngine gameEngine;
 
-    // ImageIcon 배열은 Image로 변환해서 사용
-    private Image[] tetImages = new Image[8];          // 0~7: 테트로미노 이미지 (빈 블록 포함)
-    private BufferedImage[] ghostImages;                // 고스트 이미지 (투명도 적용)
-    private Image[] currentImages = new Image[8];       // 현재 테트로미노 이미지 (필요하면 별도 처리)
+	// ImageIcon 배열은 Image로 변환해서 사용
+	private Image[] tetImages = new Image[8]; // 0~7: 테트로미노 이미지 (빈 블록 포함)
+	private BufferedImage[] ghostImages; // 고스트 이미지 (투명도 적용)
+	private Image[] currentImages = new Image[8]; // 현재 테트로미노 이미지 (필요하면 별도 처리)
 
-    private ImagePanel imagePanel;
+	private ImagePanel imagePanel;
 
-    private static final boolean DEBUG = false;  // 디버그 출력 on/off
+	private static final boolean DEBUG = false; // 디버그 출력 on/off
 
-    public GameRenderer(DataManager gameData, TetrisEngine gameEngine) {
-        super("TETRIS");
-        this.gameData = gameData;
-        this.gameEngine = gameEngine;
+	public GameRenderer(DataManager gameData, TetrisEngine gameEngine) {
+		super("TETRIS");
+		this.gameData = gameData;
+		this.gameEngine = gameEngine;
 
-        ImageIcon[] iconImages = ImageLoader.getTetrominoImage();
-        for (int i = 0; i < iconImages.length; i++) {
-            if (iconImages[i] != null) {
-                tetImages[i] = iconImages[i].getImage();
-                currentImages[i] = iconImages[i].getImage();
-            } else {
-                System.err.println("이미지 로딩 실패: 인덱스 " + i);
-            }
-        }
+		ImageIcon[] iconImages = ImageLoader.getTetrominoImage();
+		for (int i = 0; i < iconImages.length; i++) {
+			if (iconImages[i] != null) {
+				tetImages[i] = iconImages[i].getImage();
+				currentImages[i] = iconImages[i].getImage();
+			} else {
+				System.err.println("이미지 로딩 실패: 인덱스 " + i);
+			}
+		}
 
-        ghostImages = ImageLoader.getGhostImage();
+		ghostImages = ImageLoader.getGhostImage();
 
-        imagePanel = new ImagePanel();
-        imagePanel.setDoubleBuffered(true);
-        imagePanel.setFocusable(true);
+		imagePanel = new ImagePanel();
+		imagePanel.setDoubleBuffered(true);
+		imagePanel.setFocusable(true);
 
-        // 키 입력 처리
-        InputHandler inputHandler = new InputHandler(gameData, gameEngine);
-        imagePanel.addKeyListener(inputHandler);
-        
-        this.getContentPane().add(imagePanel);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(TETROMINO_SIZE * FIELD_X_COUNT + 200, TETROMINO_SIZE * FIELD_Y_COUNT + 40);
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
-    }
+		// 키 입력 처리
+		InputHandler inputHandler = new InputHandler(gameData, gameEngine);
+		imagePanel.addKeyListener(inputHandler);
 
-    public void refreshScreen() {
-        imagePanel.repaint();
-    }
+		this.getContentPane().add(imagePanel);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setSize(TETROMINO_SIZE * FIELD_X_COUNT + 200, TETROMINO_SIZE * FIELD_Y_COUNT + 40);
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
+	}
 
-    /**
-     * 좌표 배열에 오프셋을 적용한 새로운 리스트 반환
-     */
-    private List<Point> translateCoords(Point[] coords, Point offset) {
-        List<Point> translated = new ArrayList<>(coords.length);
-        for (Point p : coords) {
-            translated.add(new Point(p.x + offset.x, p.y + offset.y));
-        }
-        return translated;
-    }
+	public void refreshScreen() {
+		imagePanel.repaint();
+	}
 
-    /**
-     * 블록 리스트를 이미지 배열과 인덱스를 이용해 그리기
-     */
-    private void drawBlocks(Graphics g, List<Point> blocks, Image[] images, int imageIndex) {
-    	if (imageIndex >= 7) return;
-        for (Point p : blocks) {
-            if (p.y >= BUFFER_ZONE && p.y < FIELD_Y_COUNT + BUFFER_ZONE) {
-                g.drawImage(
-                        images[imageIndex],
-                        p.x * TETROMINO_SIZE,
-                        (p.y - BUFFER_ZONE) * TETROMINO_SIZE,
-                        TETROMINO_SIZE,
-                        TETROMINO_SIZE,
-                        this
-                );
-            }
-        }
-    }
+	/**
+	 * 좌표 배열에 오프셋을 적용한 새로운 리스트 반환
+	 */
+	private List<Point> translateCoords(Point[] coords, Point offset) {
+		List<Point> translated = new ArrayList<>(coords.length);
+		for (Point p : coords) {
+			translated.add(new Point(p.x + offset.x, p.y + offset.y));
+		}
+		return translated;
+	}
 
-    /**
-     * 게임 화면을 그리는 패널
-     */
-    private class ImagePanel extends JPanel {
-        private static final long serialVersionUID = 1L;
+	/**
+	 * 블록 리스트를 이미지 배열과 인덱스를 이용해 그리기
+	 */
+	private void drawBlocks(Graphics g, List<Point> blocks, Image[] images, int imageIndex) {
+		if (imageIndex >= 7)
+			return;
+		for (Point p : blocks) {
+			if (p.y >= BUFFER_ZONE && p.y < FIELD_Y_COUNT + BUFFER_ZONE) {
+				g.drawImage(images[imageIndex], p.x * TETROMINO_SIZE, (p.y - BUFFER_ZONE) * TETROMINO_SIZE,
+						TETROMINO_SIZE, TETROMINO_SIZE, this);
+			}
+		}
+	}
 
-        @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
+	/**
+	 * 게임 화면을 그리는 패널
+	 */
+	private class ImagePanel extends JPanel {
+		private static final long serialVersionUID = 1L;
 
-            Tetromino current = gameData.getTetrominoState().getCurrentTetromino();
-            if (current == null) return;
+		@Override
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
 
-            int tetIndex = current.ordinal();
-            if (tetIndex < 0 || tetIndex > tetImages.length) return;
+			Tetromino current = gameData.getTetrominoState().getCurrentTetromino();
+			if (current == null)
+				return;
 
-            Point[] coords = gameData.getTetrominoState().getTetrominoCoords();
+			int tetIndex = current.ordinal();
+			if (tetIndex < 0 || tetIndex > tetImages.length)
+				return;
 
-            Point ghostOffset = gameEngine.getTetrominoMover().getHardDropOffset();
-            Point currentOffset = gameData.getTetrominoState().getTetrominoOffset();
+			Point[] coords = gameData.getTetrominoState().getTetrominoCoords();
 
-            if (DEBUG) {
-                System.out.println("===== Debug Info =====");
-                System.out.println("Current Tetromino: " + current);
-                System.out.println("Ghost Offset: " + ghostOffset);
-                System.out.println("Current Offset: " + currentOffset);
-                for (int y = BUFFER_ZONE; y < FIELD_Y_COUNT + BUFFER_ZONE; y++) 
-                	System.out.print(gameData.getGameState().getRowBlockCount()[y]);
-                System.out.println();
-                for (Point p : coords) {
-                    System.out.printf("Block coord: (%d, %d)\n", p.x, p.y);
-                }
-                System.out.println("======================");
-            }
+			Point ghostOffset = gameEngine.getTetrominoMover().getHardDropOffset();
+			Point currentOffset = gameData.getTetrominoState().getTetrominoOffset();
 
-            // 필드 배경 블록 그리기
-            for (int y = BUFFER_ZONE; y < FIELD_Y_COUNT + BUFFER_ZONE; y++) {
-                for (int x = 0; x < FIELD_X_COUNT; x++) {
-                    int blockType = gameData.getCell(y, x);
-                    if (blockType >= 0 && blockType < tetImages.length) {
-                        g.drawImage(
-                                tetImages[blockType],
-                                x * TETROMINO_SIZE,
-                                (y - BUFFER_ZONE) * TETROMINO_SIZE,
-                                TETROMINO_SIZE,
-                                TETROMINO_SIZE,
-                                this
-                        );
-                    }
-                }
-            }
+			if (DEBUG) {
+				System.out.println("===== Debug Info =====");
+				System.out.println("Current Tetromino: " + current);
+				System.out.println("Ghost Offset: " + ghostOffset);
+				System.out.println("Current Offset: " + currentOffset);
+				for (int y = BUFFER_ZONE; y < FIELD_Y_COUNT + BUFFER_ZONE; y++)
+					System.out.print(gameData.getGameState().getRowBlockCount()[y]);
+				System.out.println();
+				for (Point p : coords) {
+					System.out.printf("Block coord: (%d, %d)\n", p.x, p.y);
+				}
+				System.out.println("======================");
+			}
 
-            // 고스트 블록 그리기
-            List<Point> ghostBlocks = translateCoords(coords, ghostOffset);
-            drawBlocks(g, ghostBlocks, ghostImages, tetIndex);
+			// 필드 배경 블록 그리기
+			for (int y = BUFFER_ZONE; y < FIELD_Y_COUNT + BUFFER_ZONE; y++) {
+				for (int x = 0; x < FIELD_X_COUNT; x++) {
+					int blockType = gameData.getCell(y, x);
+					if (blockType >= 0 && blockType < tetImages.length) {
+						g.drawImage(tetImages[blockType], x * TETROMINO_SIZE, (y - BUFFER_ZONE) * TETROMINO_SIZE,
+								TETROMINO_SIZE, TETROMINO_SIZE, this);
+					}
+				}
+			}
 
-            // 현재 테트로미노 블록 그리기
-            List<Point> currentBlocks = translateCoords(coords, currentOffset);
-            drawBlocks(g, currentBlocks, currentImages, tetIndex);
-            
-            // TODO 포켓 미리 보여주기
-            
-            g.setFont(new Font("Consolas", Font.BOLD, 18));  // 글꼴 설정 (Bold, 크기 18)
-            g.setColor(Color.BLACK);                      // 글자 색상 설정
-            
-            long score = gameData.getGameState().getScore();
-            int level = gameData.getGameState().getLevel();
-            Tetromino heloTetromino = gameEngine.getHoldHandler().getHeldTetromino();
-            Tetromino[][] pocket = gameData.getPocketCopy();
+			// 고스트 블록 그리기
+			List<Point> ghostBlocks = translateCoords(coords, ghostOffset);
+			drawBlocks(g, ghostBlocks, ghostImages, tetIndex);
 
-            g.drawString("Score: " + score, 320, 20);
-            g.drawString("Level: " + level, 320, 40);
+			// 현재 테트로미노 블록 그리기
+			List<Point> currentBlocks = translateCoords(coords, currentOffset);
+			drawBlocks(g, currentBlocks, currentImages, tetIndex);
 
-            g.drawString("Hold: " + heloTetromino, 320, 60);          // 출력
-            for (int i = 0; i < 7; i++) if (pocket[0][i] != null) g.drawString(pocket[0][i].toString(), 320 + (i * 10), 80);          // 출력
-            for (int i = 0; i < 7; i++) if (pocket[1][i] != null) g.drawString(pocket[1][i].toString(), 320 + (i * 10), 100);          // 출력
+			// TODO 포켓 미리 보여주기
 
-        }
-    }
+			g.setFont(new Font("Consolas", Font.BOLD, 18)); // 글꼴 설정 (Bold, 크기 18)
+			g.setColor(Color.BLACK); // 글자 색상 설정
+
+			long score = gameEngine.getScoreManager().getScore();
+			int level = gameEngine.getScoreManager().getLevel();
+			Tetromino heloTetromino = gameEngine.getHoldHandler().getHeldTetromino();
+			Tetromino[][] bag = gameData.getBagCopy();
+
+			g.drawString("Score: " + score, 320, 20);
+			g.drawString("Level: " + level, 320, 40);
+
+			g.drawString("Hold: " + heloTetromino, 320, 60); // 출력
+			for (int i = 0; i < 7; i++)
+				if (bag[0][i] != null)
+					g.drawString(bag[0][i].toString(), 320 + (i * 10), 80); // 출력
+			for (int i = 0; i < 7; i++)
+				if (bag[1][i] != null)
+					g.drawString(bag[1][i].toString(), 320 + (i * 10), 100); // 출력
+
+		}
+	}
 }

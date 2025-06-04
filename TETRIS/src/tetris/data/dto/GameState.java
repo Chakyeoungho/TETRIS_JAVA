@@ -8,11 +8,6 @@ import static tetris.data.constants.GameConstants.GAME_PROCESS;
 public class GameState {
     // --- 게임 진행 상태 ---
     private int gameStateCode = GAME_PROCESS;
-    private int level = 1;
-
-    // --- 점수 관련 ---
-    private long score = 0;
-    private int totalClearedLine = 0;
     
     // --- 줄 정보 ---
     private int[] rowBlockCounts = new int[BUFFER_ZONE + FIELD_Y_COUNT];
@@ -22,17 +17,6 @@ public class GameState {
     // 게임 진행 상태
     public int getGameStateCode() { return gameStateCode; }
     public void setGameStateCode(int gameStateCode) { this.gameStateCode = gameStateCode; }
-
-    public int getLevel() { return level; }
-    public void setLevel(int level) { this.level = level; }
-
-    // 점수 관련
-    public long getScore() { return score; }
-    public void setScore(long score) { this.score = score; }
-
-	public int getTotalClearedLine() { return totalClearedLine; }
-	public void increaseTotalClearedLine() { this.totalClearedLine++; }
-	public void resetTotalClearedLine() { this.totalClearedLine = 0; }
 
     // --- 줄 정보 ---
     public int[] getRowBlockCount() { return rowBlockCounts; }
