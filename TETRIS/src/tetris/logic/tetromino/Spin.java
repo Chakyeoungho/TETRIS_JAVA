@@ -1,23 +1,29 @@
-package tetris.logic.tetromino.spin;
+package tetris.logic.tetromino;
 
-import static tetris.logic.tetromino.spin.WallKickData.getWallKickOffsets;
+import static tetris.data.constant.WallKickData.getWallKickOffsets;
 
 import java.awt.Point;
 
-import tetris.data.constants.Tetromino;
-import tetris.data.dto.DataManager;
-import tetris.logic.tetromino.CollisionChecker;
+import tetris.data.constant.SpinState;
+import tetris.data.constant.Tetromino;
+import tetris.logic.TetrisEngine;
+import tetris.logic.data.DataManager;
 
 /**
  * 테트로미노 회전 및 SRS(Wall Kick) 적용을 담당하는 클래스
  */
 public class Spin {
 	private final DataManager gameData;
+	private final TetrisEngine gameEngine;
 	private final CollisionChecker checker;
+	
+	private int spinPoint = 0;
+	SpinState currentSpinState = SpinState.S0;
 
-	public Spin(DataManager gameData, CollisionChecker checker) {
+	public Spin(DataManager gameData, TetrisEngine gameEngine) {
 		this.gameData = gameData;
-		this.checker = checker;
+		this.gameEngine = gameEngine;
+		checker = gameEngine.getCollisionChecker();
 	}
 
 	/**
@@ -51,6 +57,7 @@ public class Spin {
 		var state = gameData.getTetrominoState();
 		Tetromino type = state.getCurrentTetromino();
 		SpinState to = isClockwise ? SpinState.clockwise(from) : SpinState.counterClockwise(from);
+		spinPoint = 1;
 
 		Point[] rotatedCoords = getRotatedCoords(state.getTetrominoCoords(), type, isClockwise);
 		Point offset = state.getTetrominoOffset();
@@ -60,11 +67,13 @@ public class Spin {
 			if (checker.canPlace(rotatedCoords, testOffset)) {
 				state.setTetrominoCoords(rotatedCoords);
 				state.setTetrominoOffset(testOffset);
-				state.setSpinState(to);
+				setSpinState(to);
 				return;
 			}
+			spinPoint++;
 		}
 		// 모든 위치 실패 → 회전 무효
+		gameEngine.getScoreManager().clearLastActionSpinFlag();
 	}
 
 	/**
@@ -74,7 +83,11 @@ public class Spin {
 		Tetromino type = gameData.getTetrominoState().getCurrentTetromino();
 		if (type == Tetromino.O) return; // 회전 불필요
 
-		SpinState current = gameData.getTetrominoState().getCurrentSpinState();
-		applySRSRotation(current, isClockwise);
+		applySRSRotation(currentSpinState, isClockwise);
 	}
+	
+	public int getSpinPoint() { return spinPoint; }
+	
+	public SpinState getCurrentSpinState() { return currentSpinState; }
+	public void setSpinState(SpinState currentRotationState) { this.currentSpinState = currentRotationState; }
 }

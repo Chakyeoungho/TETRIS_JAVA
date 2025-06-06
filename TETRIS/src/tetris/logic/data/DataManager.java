@@ -1,6 +1,10 @@
-package tetris.data.dto;
+package tetris.logic.data;
 
-import tetris.data.constants.Tetromino;
+import tetris.data.constant.Tetromino;
+import tetris.data.dto.GameState;
+import tetris.data.dto.PlayField;
+import tetris.data.dto.TetrominoBag;
+import tetris.data.dto.TetrominoState;
 import tetris.logic.tetromino.CollisionChecker.CellReader;
 
 /**
@@ -30,12 +34,12 @@ public class DataManager implements CellReader {
     public TetrominoBag getTetrominoPocket() { return pocket; } 
 
     // 게임 필드의 특정 셀 값을 읽어옴
-    // 오버라이딩
+    @Override
     public int getCell(int y, int x) { return fieldData.readFieldData().get(y, x); }
     // 게임 필드의 특정 셀에 테트로미노 값을 설정
     public void setCell(int y, int x, Tetromino tetromino) { fieldData.setCell(y, x, tetromino); }
     // 게임 필드의 특정 셀에 테트로미노 값을 제거
-    public void removeCell(int y, int x, Tetromino tetromino) { fieldData.removeCell(y, x, tetromino); }
+    public void removeCell(int y, int x) { fieldData.removeCell(y, x); }
 
     // 현재 포켓 상태(현재 + 다음 큐)를 복사해서 반환
     public Tetromino[][] getBagCopy() { return pocket.getBagCopy(); }

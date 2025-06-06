@@ -1,16 +1,15 @@
 package tetris.logic.tetromino;
 
-import static tetris.data.constants.Tetromino.EMPTY;
+import static tetris.data.constant.Tetromino.EMPTY;
 
 import java.awt.Point;
 
-import tetris.data.constants.GameConstants;
+import tetris.data.constant.GameConstants;
 
 /**
  * CollisionChecker 클래스는 테트로미노의 충돌 여부를 판단하는 역할을 한다.
  */
 public class CollisionChecker {
-
     public interface CellReader {
         int getCell(int y, int x);
     }
@@ -37,8 +36,8 @@ public class CollisionChecker {
      */
     public boolean canPlace(Point[] coords, Point offset) {
         for (Point p : coords) {
-            int x = p.x + offset.x;
             int y = p.y + offset.y;
+            int x = p.x + offset.x;
 
             if (!isInBounds(y, x) || !isCellFree(y, x)) {
                 return false;

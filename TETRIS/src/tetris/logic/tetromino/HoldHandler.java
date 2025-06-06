@@ -1,14 +1,14 @@
 package tetris.logic.tetromino;
 
-import static tetris.data.constants.GameConstants.BUFFER_ZONE;
-import static tetris.data.constants.Tetromino.EMPTY;
+import static tetris.data.constant.GameConstants.BUFFER_ZONE;
+import static tetris.data.constant.Tetromino.EMPTY;
 
 import java.awt.Point;
 
-import tetris.data.constants.Tetromino;
-import tetris.data.dto.DataManager;
+import tetris.data.constant.SpinState;
+import tetris.data.constant.Tetromino;
 import tetris.logic.TetrisEngine;
-import tetris.logic.tetromino.spin.SpinState;
+import tetris.logic.data.DataManager;
 
 public class HoldHandler {
 	private DataManager gameData;
@@ -32,28 +32,25 @@ public class HoldHandler {
 	}
 
 	public void hold() {
-		var gameState = gameData.getTetrominoState();
 		var tetState = gameData.getTetrominoState();
-        Tetromino current = gameState.getCurrentTetromino();
+		Tetromino current = tetState.getCurrentTetromino();
 
-		if (isHoldUsed) {
-			return;
+		if (isHoldUsed) return;
+
+		if (heldTetromino == EMPTY) {
+			heldTetromino = tetState.getCurrentTetromino();
+			gameEngine.getTetrominoGenerator().generateTetromino();
 		} else {
-			if (heldTetromino == EMPTY) {
-				heldTetromino = gameState.getCurrentTetromino();
-				gameEngine.getTetrominoGenerator().generateTetromino();
-			} else {
-	            // 스왑
-	            Tetromino temp = heldTetromino;
-	            heldTetromino = current;
-	            gameState.setCurrentTetromino(temp);
-	            tetState.setTetrominoOffset(new Point(3, BUFFER_ZONE - 1));
-	            tetState.setTetrominoCoords(tetState.getCurrentTetromino().getBlocks());
-	            gameData.getTetrominoState().setSpinState(SpinState.S0);
-			}
-
-            gameEngine.getTetrominoMover().drop();
-			isHoldUsed = true;
+			// 스왑
+			Tetromino temp = heldTetromino;
+			heldTetromino = current;
+			tetState.setCurrentTetromino(temp);
+			tetState.setTetrominoOffset(new Point(3, BUFFER_ZONE - 1));
+			tetState.setTetrominoCoords(tetState.getCurrentTetromino().getBlocks());
+			gameEngine.getSpin().setSpinState(SpinState.S0);
 		}
+
+		gameEngine.getTetrominoMover().drop();
+		isHoldUsed = true;
 	}
 }

@@ -75,6 +75,8 @@ public class GameTimer implements Runnable {
 				long deadline = System.nanoTime() + sleepNanos;
 
 				while (running) {
+					// forceRunRequested가 true면 즉시 task 실행
+					// 호출 후 플래그를 false로 초기화하여 다음 대기 사이클로 넘어감
 					if (forceRunRequested) {
 						forceRunRequested = false;
 						break;
@@ -85,7 +87,9 @@ public class GameTimer implements Runnable {
 
 					if (remaining <= 0)
 						break;
-
+					
+					// 2ms 이상 남았으면 대기 상태로 들어가 CPU 낭비 최소화
+					// 2ms 이하일 때는 spin wait으로 짧은 시간 동안 대기
 					if (remaining > 2_000_000) {
 						synchronized (lock) {
 							lock.wait(remaining / 1_000_000, (int) (remaining % 1_000_000));

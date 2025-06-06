@@ -8,93 +8,94 @@ import java.awt.image.BufferedImage;
 
 public class ImageLoader {
 
-    // 일반 테트로미노 이미지 아이콘 (0~6: 블록, 7: 빈칸)
-    private static final ImageIcon[] tetromino_image = new ImageIcon[8];
+	// 테트로미노 이미지 아이콘 (0~6: 블록, 7: 빈칸)
+	private static final ImageIcon[] TETROMINO_IMAGES = new ImageIcon[8];
 
-    // 고스트 이미지 (BufferedImage 형태, 투명도 적용됨, 0~6번만 유효)
-    private static final BufferedImage[] ghost_image = new BufferedImage[7];
+	// 고스트 이미지 (0~6번 블록만 해당, 투명도 적용된 BufferedImage)
+	private static final BufferedImage[] GHOST_IMAGES = new BufferedImage[7];
 
-    // 게임 전체 아이콘 (타이틀, 창 아이콘 등)
-    private static ImageIcon tetris_icon = new ImageIcon();
+	// 게임 아이콘 (타이틀, 창 아이콘 등)
+	private static ImageIcon TETRIS_ICON;
 
-    static {
-        // 테트로미노 이미지 로딩
-        tetromino_image[0] = loadIcon("/Tetromino/MITet.png");
-        tetromino_image[1] = loadIcon("/Tetromino/MLTet.png");
-        tetromino_image[2] = loadIcon("/Tetromino/MJTet.png");
-        tetromino_image[3] = loadIcon("/Tetromino/MOTet.png");
-        tetromino_image[4] = loadIcon("/Tetromino/MSTet.png");
-        tetromino_image[5] = loadIcon("/Tetromino/MTTet.png");
-        tetromino_image[6] = loadIcon("/Tetromino/MZTet.png");
-        tetromino_image[7] = loadIcon("/Tetromino/M_Tet.png"); // 빈 블록
+	static {
+		loadTetrominoImages();
+		loadGameIcon();
+		createGhostImages();
+	}
 
-        // 게임 아이콘 로딩
-        tetris_icon = loadIcon("/tetris.ico");
+	private static void loadTetrominoImages() {
+		TETROMINO_IMAGES[0] = loadIcon("/tetromino/MITet.png");
+		TETROMINO_IMAGES[1] = loadIcon("/tetromino/MLTet.png");
+		TETROMINO_IMAGES[2] = loadIcon("/tetromino/MJTet.png");
+		TETROMINO_IMAGES[3] = loadIcon("/tetromino/MOTet.png");
+		TETROMINO_IMAGES[4] = loadIcon("/tetromino/MSTet.png");
+		TETROMINO_IMAGES[5] = loadIcon("/tetromino/MTTet.png");
+		TETROMINO_IMAGES[6] = loadIcon("/tetromino/MZTet.png");
+		TETROMINO_IMAGES[7] = loadIcon("/tetromino/M_Tet.png"); // 빈 칸
+	}
 
-        // 고스트 이미지 생성 (투명도 적용)
-        for (int i = 0; i < 7; i++) {
-            ghost_image[i] = applyTransparency(tetromino_image[i], 0.3f); // 30% 투명도
-        }
-    }
+	private static void loadGameIcon() {
+		TETRIS_ICON = loadIcon("/tetris.ico");
+	}
 
-    /**
-     * 지정된 경로의 이미지 아이콘을 로드한다.
-     * 
-     * @param path 리소스 경로 (예: "/Tetromino/MITet.png")
-     * @return ImageIcon 객체, 실패 시 null 반환
-     */
-    private static ImageIcon loadIcon(String path) {
-        java.net.URL imgURL = ImageLoader.class.getResource(path);
-        if (imgURL != null) {
-            return new ImageIcon(imgURL);
-        } else {
-            System.err.println("이미지 로딩 실패: " + path);
-            return null;
-        }
-    }
+	private static void createGhostImages() {
+		for (int i = 0; i < GHOST_IMAGES.length; i++) {
+			ImageIcon icon = TETROMINO_IMAGES[i];
+			if (icon != null) {
+				GHOST_IMAGES[i] = applyTransparency(icon.getImage(), 0.3f);
+			}
+		}
+	}
 
-    /**
-     * ImageIcon을 투명도 적용된 BufferedImage로 변환한다.
-     * 
-     * @param icon 원본 이미지 아이콘
-     * @param alpha 0.0f ~ 1.0f 사이 투명도 값 (예: 0.3f = 30% 불투명)
-     * @return 투명도가 적용된 BufferedImage
-     */
-    private static BufferedImage applyTransparency(ImageIcon icon, float alpha) {
-        Image image = icon.getImage();
+	/**
+	 * 리소스 경로에서 ImageIcon을 로드한다. 실패하면 null 반환.
+	 */
+	private static ImageIcon loadIcon(String path) {
+		java.net.URL imgURL = ImageLoader.class.getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL);
+		}
+		System.err.println("이미지 로딩 실패: " + path);
+		return null;
+	}
 
-        // 원본 ImageIcon을 BufferedImage로 변환
-        BufferedImage base = new BufferedImage(
-            image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB
-        );
-        Graphics2D g2 = base.createGraphics();
-        g2.drawImage(image, 0, 0, null);
-        g2.dispose();
+	/**
+	 * 주어진 Image에 투명도(alpha)를 적용하여 BufferedImage로 반환.
+	 * 
+	 * @param image 원본 이미지
+	 * @param alpha 0.0f ~ 1.0f 투명도 (0 완전투명, 1 완전불투명)
+	 * @return 투명도가 적용된 BufferedImage
+	 */
+	private static BufferedImage applyTransparency(Image image, float alpha) {
+		int width = image.getWidth(null);
+		int height = image.getHeight(null);
 
-        // 투명도 적용
-        BufferedImage transparent = new BufferedImage(
-            base.getWidth(), base.getHeight(), BufferedImage.TYPE_INT_ARGB
-        );
-        Graphics2D g = transparent.createGraphics();
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-        g.drawImage(base, 0, 0, null);
-        g.dispose();
+		BufferedImage baseImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = baseImage.createGraphics();
+		g2d.drawImage(image, 0, 0, null);
+		g2d.dispose();
 
-        return transparent;
-    }
+		BufferedImage transparentImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = transparentImage.createGraphics();
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+		g.drawImage(baseImage, 0, 0, null);
+		g.dispose();
 
-    /** 테트로미노 이미지 아이콘 배열을 반환한다. */
-    public static ImageIcon[] getTetrominoImage() {
-        return tetromino_image;
-    }
+		return transparentImage;
+	}
 
-    /** 고스트용 BufferedImage 배열을 반환한다. */
-    public static BufferedImage[] getGhostImage() {
-        return ghost_image;
-    }
+	/** 테트로미노 이미지 아이콘 배열 반환 */
+	public static ImageIcon[] getTetrominoImages() {
+		return TETROMINO_IMAGES.clone();
+	}
 
-    /** 게임 아이콘 반환 */
-    public static ImageIcon getTetrisIcon() {
-        return tetris_icon;
-    }
+	/** 고스트 이미지 배열 반환 */
+	public static BufferedImage[] getGhostImages() {
+		return GHOST_IMAGES.clone();
+	}
+
+	/** 게임 아이콘 반환 */
+	public static ImageIcon getTetrisIcon() {
+		return TETRIS_ICON;
+	}
 }

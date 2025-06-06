@@ -1,7 +1,7 @@
 package tetris.logic.core;
 
 public class LockDelayTimer implements Runnable {
-    private static final long LOCK_DELAY_NANOS = 500_000_000L;
+    private static final long LOCK_DELAY_NANOS = 500_000_000L; // 0.5초 딜레이
 
     private volatile boolean running = false;
     private final Runnable task;
@@ -14,7 +14,7 @@ public class LockDelayTimer implements Runnable {
         this.task = task;
     }
 
-    public void start() {
+    public synchronized void start() {
         if (running) return;
         forceRunRequested = false;
         running = true;
@@ -23,7 +23,7 @@ public class LockDelayTimer implements Runnable {
         thread.start();
     }
 
-    public void stop() {
+    public synchronized void stop() {
         running = false;
         synchronized (lock) {
             lock.notifyAll();

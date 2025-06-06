@@ -1,10 +1,8 @@
-package tetris.logic.tetromino.spin;
+package tetris.data.constant;
 
 import java.awt.Point;
 import java.util.List;
 import java.util.Map;
-
-import tetris.data.constants.Tetromino;
 
 public final class WallKickData {
     private WallKickData() {

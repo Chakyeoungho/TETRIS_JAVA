@@ -1,13 +1,10 @@
 package tetris.logic.tetromino;
 
-import static tetris.data.constants.GameConstants.BUFFER_ZONE;
-import static tetris.data.constants.GameConstants.GAME_OVER;
-
 import java.awt.Point;
 
-import tetris.data.constants.Tetromino;
-import tetris.data.dto.DataManager;
+import tetris.data.constant.Tetromino;
 import tetris.logic.TetrisEngine;
+import tetris.logic.data.DataManager;
 
 public class TetrominoMover {
 	private final DataManager gameData;
@@ -37,15 +34,15 @@ public class TetrominoMover {
 
 	public synchronized void lockTetromino() {
 		var cascadeHandler = gameEngine.getCascadeHandler();
+		var scoreManager = gameEngine.getScoreManager();
 		Point[] coords = gameData.getTetrominoState().getTetrominoCoords();
 		Point offset = gameData.getTetrominoState().getTetrominoOffset();
 		
 		placeTetrominoOnField(coords, offset);
 		updateRowBlockCounts(coords, offset);
+		scoreManager.setSpinCornerStatus();
 		cascadeHandler.cascade();
-
-		if (gameData.getPlayField().getRowBlockCount()[BUFFER_ZONE - 2] > 0)
-			gameData.getGameState().setGameStateCode(GAME_OVER);
+		scoreManager.updateScore(cascadeHandler.getClearedLine());
 		
 		gameEngine.resetLockDelayCounter();
 	}
@@ -104,8 +101,8 @@ public class TetrominoMover {
 	private void placeTetrominoOnField(Point[] coords, Point offset) {
 		Tetromino current = gameData.getTetrominoState().getCurrentTetromino();
 		for (Point coord : coords) {
-			int x = coord.x + offset.x;
 			int y = coord.y + offset.y;
+			int x = coord.x + offset.x;
 			gameData.setCell(y, x, current);
 		}
 	}

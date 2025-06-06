@@ -1,18 +1,19 @@
 package tetris.logic.tetromino;
 
-import static tetris.data.constants.GameConstants.BUFFER_ZONE;
-import static tetris.data.constants.Tetromino.TETROMINO_TYPE_COUNT;
+import static tetris.data.constant.GameConstants.BUFFER_ZONE;
+import static tetris.data.constant.GameConstants.STATE_GAME_OVER;
+import static tetris.data.constant.Tetromino.TETROMINO_TYPE_COUNT;
 
 import java.awt.Point;
 
-import tetris.data.constants.Tetromino;
-import tetris.data.dto.DataManager;
+import tetris.data.constant.SpinState;
+import tetris.data.constant.Tetromino;
 import tetris.data.dto.TetrominoState;
 import tetris.logic.TetrisEngine;
-import tetris.logic.tetromino.spin.SpinState;
+import tetris.logic.data.DataManager;
 
 public class TetrominoGenerator {
-    private byte currentPocketIndex = (byte) (TETROMINO_TYPE_COUNT);
+    private int currentPocketIndex = (byte) (TETROMINO_TYPE_COUNT);
     private final DataManager gameData;
     private final TetrisEngine gameEngine;
 
@@ -53,7 +54,7 @@ public class TetrominoGenerator {
     public void initData() {
         advancePocketIndex();
         updateCurrentTetromino();
-        gameData.getTetrominoState().setSpinState(SpinState.S0);
+        gameEngine.getSpin().setSpinState(SpinState.S0);
         gameEngine.getHoldHandler().resetIsHoldUsed();
     }
 
@@ -62,6 +63,13 @@ public class TetrominoGenerator {
     	
         initData();
         tetState.setTetrominoCoords(tetState.getCurrentTetromino().getBlocks());
+
+		if (gameData.getPlayField().getRowBlockCount()[BUFFER_ZONE - 1] > 0) {
+			gameData.getGameState().setGameStateCode(STATE_GAME_OVER);
+			//gameEngine.getGameRenderer().setGameOverState();
+			gameEngine.getGameTimer().stop();
+			gameEngine.stopLockDelay();
+		}
     }
 
     public void dumpState() {
@@ -77,4 +85,6 @@ public class TetrominoGenerator {
         }
         System.out.println("현재 테트로미노: " + gameData.getTetrominoState().getCurrentTetromino());
     }
+    
+    public int getCurrentPocketIndex() { return currentPocketIndex; }
 }

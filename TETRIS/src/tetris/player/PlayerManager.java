@@ -1,7 +1,7 @@
 package tetris.player;
 
-import tetris.data.dto.DataManager;
 import tetris.logic.TetrisEngine;
+import tetris.logic.data.DataManager;
 
 public class PlayerManager {
 	private final DataManager gameData;

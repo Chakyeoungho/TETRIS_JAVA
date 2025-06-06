@@ -1,18 +1,18 @@
 package tetris.data.dto;
 
-import static tetris.data.constants.GameConstants.BUFFER_ZONE;
-import static tetris.data.constants.GameConstants.FIELD_X_COUNT;
-import static tetris.data.constants.GameConstants.FIELD_Y_COUNT;
+import static tetris.data.constant.GameConstants.BUFFER_ZONE;
+import static tetris.data.constant.GameConstants.FIELD_X_COUNT;
+import static tetris.data.constant.GameConstants.FIELD_Y_COUNT;
 
 import java.util.Arrays;
 
-import tetris.data.constants.Tetromino;
+import tetris.data.constant.Tetromino;
 
 public class PlayField {
     // --- Interface ---
     // 내부 인터페이스: 플레이필드(게임판)에서 특정 좌표의 셀 값을 읽는 용도
     // (y, x) 좌표를 인자로 받아 해당 위치의 값을 반환하는 읽기 전용 인터페이스
-    interface PlayfieldReader {
+    public interface PlayfieldReader {
         int get(int y, int x);
     }
 
@@ -59,12 +59,12 @@ public class PlayField {
         playfield[y][x] = tetromino.ordinal();
     }
     
-    public void removeCell(int y, int x, Tetromino tetromino) {
+    public void removeCell(int y, int x) {
     	playfield[y][x] = EMPTY_CELL;
     }
 
     // 공개 메서드: 읽기 전용 뷰를 반환하여 외부에 안전한 접근 경로 제공
-    PlayfieldReader readFieldData() {
+    public PlayfieldReader readFieldData() {
         return readOnlyView;
     }
 }

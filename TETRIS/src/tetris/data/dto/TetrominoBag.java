@@ -1,8 +1,8 @@
 package tetris.data.dto;
 
-import static tetris.data.constants.Tetromino.TETROMINO_TYPE_COUNT;
+import static tetris.data.constant.Tetromino.TETROMINO_TYPE_COUNT;
 
-import tetris.data.constants.Tetromino;
+import tetris.data.constant.Tetromino;
 import tetris.logic.core.WELL1024a;
 
 public class TetrominoBag {
@@ -28,7 +28,7 @@ public class TetrominoBag {
 
     // 비공개 필드: 읽기 전용 복사본 반환 함수
     // getPocketData() 호출 시 이 복사된 값을 반환하여 외부에서 내부 배열 변경을 방지
-    Tetromino[][] getBagCopy() {
+    public Tetromino[][] getBagCopy() {
     	Tetromino[][] copy = new Tetromino[2][TETROMINO_TYPE_COUNT];
     	
         System.arraycopy(tetrominoBag[CURRENT_BAG], 0, 
@@ -45,7 +45,7 @@ public class TetrominoBag {
     // --- Public Method ---
     // 공개 메서드: 다음 포켓을 현재 포켓으로 이동시키고, 새 포켓은 다시 셔플하여 갱신
     // 이 메서드를 호출하면 게임 진행에 필요한 새로운 테트로미노 순서가 준비됨
-    void advanceBag() {
+    public void advanceBag() {
         System.arraycopy(tetrominoBag[NEXT_POCKET], 0, 
                          tetrominoBag[CURRENT_BAG], 0, 
                          tetrominoBag[NEXT_POCKET].length);
