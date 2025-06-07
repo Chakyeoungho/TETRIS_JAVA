@@ -5,29 +5,36 @@ import static tetris.data.constant.Tetromino.TETROMINO_TYPE_COUNT;
 import tetris.data.constant.Tetromino;
 import tetris.logic.core.WELL1024a;
 
+/**
+ * 7-Bag 시스템을 구현한 테트로미노 공급 객체.
+ * 7개의 서로 다른 테트로미노 한 세트를 무작위 순서로 제공.
+ */
 public class TetrominoBag {
-	// --- Constant ---
-    // 상수: 클래스 내에서 변경하지 않는 고정 값으로, 포켓의 현재와 다음 상태를 구분하는 용도
-    private static final int CURRENT_BAG = 0;
-    private static final int NEXT_POCKET = 1;
+    
+    // --- Static Fields ---
+    private static final int CURRENT_BAG = 0; // 현재 사용 중인 가방 인덱스
+    private static final int NEXT_POCKET = 1; // 다음에 사용할 가방 인덱스 (원본 변수명 존중)
 
-    // --- Field ---
-    // 인스턴스 필드: 난수 생성기 객체와 테트로미노 포켓 데이터를 저장하는 배열
-    // tetrominoPocket[0]은 현재 포켓, tetrominoPocket[1]은 다음 포켓을 의미
-    private WELL1024a wellRng = new WELL1024a();
-    private Tetromino[][] tetrominoBag = new Tetromino[2][TETROMINO_TYPE_COUNT];
+    // --- Instance Fields ---
+    private WELL1024a wellRng = new WELL1024a(); // 난수 생성기
+    private Tetromino[][] tetrominoBag = new Tetromino[2][TETROMINO_TYPE_COUNT]; // [0]: 현재, [1]: 다음
 
     // --- Constructor ---
-    // 생성자: 객체 생성 시 실행되는 초기화 블록
-    // 다음 포켓 배열에 0부터 TETROMINO_TYPE_COUNT-1까지 인덱스 넣고 셔플하여 초기 랜덤 상태 생성
     public TetrominoBag () {
+        // 첫 시작 시, '다음 가방'을 먼저 채우고 섞어둠.
         for (int i = 0; i < TETROMINO_TYPE_COUNT; i++) 
             tetrominoBag[NEXT_POCKET][i] = Tetromino.fromOrdinal(i);
         shuffleBag(tetrominoBag[NEXT_POCKET]);
+        
+        // 그 후, '다음 가방'을 '현재 가방'으로 만들고 새 '다음 가방'을 준비.
+        advanceBag();
     }
 
-    // 비공개 필드: 읽기 전용 복사본 반환 함수
-    // getPocketData() 호출 시 이 복사된 값을 반환하여 외부에서 내부 배열 변경을 방지
+    // --- Public Methods ---
+    /**
+     * 현재 가방과 다음 가방의 상태를 복사하여 반환 (외부 조작 방지용).
+     * UI의 'Next' 블록 표시에 주로 사용됨.
+     */
     public Tetromino[][] getBagCopy() {
     	Tetromino[][] copy = new Tetromino[2][TETROMINO_TYPE_COUNT];
     	
@@ -42,19 +49,27 @@ public class TetrominoBag {
         return copy;
     }
 
-    // --- Public Method ---
-    // 공개 메서드: 다음 포켓을 현재 포켓으로 이동시키고, 새 포켓은 다시 셔플하여 갱신
-    // 이 메서드를 호출하면 게임 진행에 필요한 새로운 테트로미노 순서가 준비됨
+    /**
+     * '다음 가방'을 '현재 가방'으로 가져오고,
+     * 비어있는 '다음 가방'은 새로 7개의 블록을 채워 섞어둔다.
+     */
     public void advanceBag() {
         System.arraycopy(tetrominoBag[NEXT_POCKET], 0, 
                          tetrominoBag[CURRENT_BAG], 0, 
                          tetrominoBag[NEXT_POCKET].length);
+        
+        // 다음 가방 새로 채우기
+        for (int i = 0; i < TETROMINO_TYPE_COUNT; i++) {
+            tetrominoBag[NEXT_POCKET][i] = Tetromino.fromOrdinal(i);
+        }
         shuffleBag(tetrominoBag[NEXT_POCKET]);
     }
 
-    // --- Private Method ---
-    // 비공개 메서드: Fisher-Yates 알고리즘을 사용한 배열 셔플 함수
-    // 포켓 내 테트로미노 순서를 무작위로 섞어 게임의 랜덤성을 보장
+    // --- Private Methods ---
+    /**
+     * Fisher-Yates 셔플 알고리즘을 사용하여 배열의 순서를 무작위로 섞음.
+     * @param array 섞을 테트로미노 배열
+     */
     private void shuffleBag(Tetromino[] array) {
         for (int i = array.length - 1; i > 0; i--) {
             int j = (int)(wellRng.WELLRNG1024a() * (i + 1));

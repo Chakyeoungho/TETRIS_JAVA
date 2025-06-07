@@ -22,6 +22,7 @@ public enum ScoreAction {
         this.baseScore = baseScore;
     }
 
+    /** 해당 액션의 기본 점수를 반환. */
     public int getBaseScore() {
         return baseScore;
     }

@@ -8,43 +8,64 @@ import tetris.data.dto.TetrominoState;
 import tetris.logic.tetromino.CollisionChecker.CellReader;
 
 /**
- * 테트리스 게임의 데이터를 통합적으로 관리하는 클래스.
- * 개별 데이터 클래스들 (필드, 포켓, 게임 상태, 테트로미노 상태)을 포함하고 있으며,
- * 외부에서 필요한 정보를 제공하거나 조작할 수 있도록 메서드를 제공한다.
+ * 게임의 모든 핵심 데이터(필드, 테트로미노, 게임 상태 등)를 통합 관리하는 클래스.
+ * 각 데이터 객체에 대한 접근을 중개하는 역할을 함 (Facade 역할).
  */
 public class DataManager implements CellReader {
-	// --- Field ---
-    // 게임 필드 상태를 관리하는 객체
-    private final PlayField fieldData = new PlayField();
-    // 테트로미노 포켓 (현재/다음 블록 큐)을 관리하는 객체
-    private final TetrominoBag bag = new TetrominoBag();
-    // 게임의 전반적인 상태 (진행 중, 일시 정지 등)를 저장하는 객체
-    private final GameState gameState = new GameState();
-    // 현재 활성화된 테트로미노의 위치, 회전 등을 관리하는 객체
-    private final TetrominoState tetrominoState = new TetrominoState();
 
-    // --- Method ---
-    // 게임 상태 객체 반환
+    // --- Instance Fields ---
+    // 게임의 모든 상태 데이터를 담는 final 필드들.
+    private final PlayField fieldData = new PlayField();          // 게임판 데이터
+    private final TetrominoBag bag = new TetrominoBag();          // 테트로미노 공급 가방
+    private final GameState gameState = new GameState();          // 게임 상태 (READY, PLAYING...)
+    private final TetrominoState tetrominoState = new TetrominoState(); // 현재 조작 중인 테트로미노 상태
+
+    // --- Public Methods (Getters for DTOs) ---
+    /** 게임 상태(GameState) 객체를 반환. */
     public GameState getGameState() { return gameState; }
-    // 현재 테트로미노 상태 객체 반환
+    
+    /** 현재 조작 중인 테트로미노 상태(TetrominoState) 객체를 반환. */
     public TetrominoState getTetrominoState() { return tetrominoState; }
     
+    /** 게임 필드(PlayField) 객체를 반환. */
     public PlayField getPlayField() { return fieldData; } 
     
+    /** 테트로미노 공급 가방(TetrominoBag) 객체를 반환. */
     public TetrominoBag getTetrominoBag() { return bag; } 
-
-    // 게임 필드의 특정 셀 값을 읽어옴
+    
+    // --- Public Methods (Delegates for PlayField) ---
+    /**
+     * 게임 필드의 특정 좌표(y, x) 값을 읽어옴. (CellReader 인터페이스 구현)
+     * CollisionChecker에서 필드 충돌 검사를 위해 사용.
+     */
     @Override
-    public int getCell(int y, int x) { return fieldData.readFieldData().get(y, x); }
-    // 게임 필드의 특정 셀에 테트로미노 값을 설정
-    public void setCell(int y, int x, Tetromino tetromino) { fieldData.setCell(y, x, tetromino); }
-    // 게임 필드의 특정 셀에 테트로미노 값을 제거
-    public void removeCell(int y, int x) { fieldData.removeCell(y, x); }
-    // 게임 필드 초기화
-    public void resetField() { fieldData.resetField(); }
+    public int getCell(int y, int x) { 
+        return fieldData.readFieldData().get(y, x); 
+    }
+    
+    /** 게임 필드의 특정 셀에 테트로미노 값을 설정 (fieldData에 위임). */
+    public void setCell(int y, int x, Tetromino tetromino) { 
+        fieldData.setCell(y, x, tetromino); 
+    }
+    
+    /** 게임 필드의 특정 셀을 빈 칸으로 만듦 (fieldData에 위임). */
+    public void removeCell(int y, int x) { 
+        fieldData.removeCell(y, x); 
+    }
+    
+    /** 게임 필드를 초기화 (fieldData에 위임). */
+    public void resetField() { 
+        fieldData.resetField(); 
+    }
 
-    // 현재 포켓 상태(현재 + 다음 큐)를 복사해서 반환
-    public Tetromino[][] getBagCopy() { return bag.getBagCopy(); }
-    // 다음 포켓을 현재로 이동시키고 새로운 포켓을 셔플
-    public void advanceBag() { bag.advanceBag(); }
+    // --- Public Methods (Delegates for TetrominoBag) ---
+    /** 현재/다음 테트로미노 가방의 복사본을 반환 (bag에 위임). */
+    public Tetromino[][] getBagCopy() { 
+        return bag.getBagCopy(); 
+    }
+    
+    /** 다음 테트로미노 가방을 준비시킴 (bag에 위임). */
+    public void advanceBag() { 
+        bag.advanceBag(); 
+    }
 }

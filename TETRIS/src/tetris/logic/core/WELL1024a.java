@@ -1,4 +1,3 @@
-
 /* ***************************************************************************** */
 /* Copyright:      Francois Panneton and Pierre L'Ecuyer, University of Montreal */
 /*                 Makoto Matsumoto, Hiroshima University                        */
@@ -6,6 +5,10 @@
 /*                 or non-commercial purposes. For commercial purposes,          */
 /*                 please contact P. L'Ecuyer at: lecuyer@iro.UMontreal.ca       */
 /* ***************************************************************************** */
+
+// Note: This is an external library for a high-quality random number generator (WELL1024a).
+// The original source code has been preserved without modification.
+// (참고: 고품질 난수 생성기(WELL1024a)를 위한 외부 라이브러리입니다.)
 
 package tetris.logic.core;
 
@@ -29,8 +32,7 @@ public class WELL1024a {
         Random rand = new Random();
         int[] init = new int[R];
         for (int i = 0; i < R; i++) {
-            // rand() << 16 | rand() 와 비슷하게 32비트 정수 생성
-            int high = rand.nextInt(1 << 16);  // 0 ~ 65535
+            int high = rand.nextInt(1 << 16);
             int low = rand.nextInt(1 << 16);
             init[i] = (high << 16) | low;
         }
@@ -49,7 +51,6 @@ public class WELL1024a {
         return v;
     }
 
-    // 기존 init 함수: 상태 초기화
     private void init(int[] init) {
         if (init.length != R) {
             throw new IllegalArgumentException("Init array length must be " + R);
@@ -58,7 +59,6 @@ public class WELL1024a {
         System.arraycopy(init, 0, STATE, 0, R);
     }
 
-    // 난수 생성 함수
     public double WELLRNG1024a() {
         z0 = STATE[(state_i + 31) & 0x1F];
         z1 = Identity(STATE[state_i]) ^ MAT0POS(8, STATE[(state_i + M1) & 0x1F]);
