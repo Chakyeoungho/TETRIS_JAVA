@@ -65,6 +65,7 @@ public class PlayField {
     public void resetField() {
         for (int y = 0; y < playfield.length; y++)
             Arrays.fill(playfield[y], EMPTY_CELL);
+        rowBlockCounts = new int[BUFFER_ZONE + FIELD_Y_COUNT];
     }
 
     // 공개 메서드: 읽기 전용 뷰를 반환하여 외부에 안전한 접근 경로 제공

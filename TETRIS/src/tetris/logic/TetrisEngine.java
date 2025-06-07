@@ -72,7 +72,7 @@ public class TetrisEngine {
 	}
 
 	public void togglePauseState() {
-		gameData.getGameState().pauseToggle();
+		gameData.getGameState().togglePause();
 		if (gameTimer != null) {
 			if (isPaused()) {
 				stopMainTimer();
