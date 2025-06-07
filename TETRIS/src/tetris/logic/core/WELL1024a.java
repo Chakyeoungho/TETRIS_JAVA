@@ -11,6 +11,7 @@ package tetris.logic.core;
 
 import java.util.Random;
 
+@SuppressWarnings("all")
 public class WELL1024a {
     private final int W = 32;
     private final int R = 32;
