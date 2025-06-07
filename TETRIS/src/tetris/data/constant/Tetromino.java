@@ -13,16 +13,16 @@ public enum Tetromino {
     EMPTY(new Point[0]);
 
 	public static final int TETROMINO_TYPE_COUNT = values().length - 1;
-    private final Point[] blocks;
+    private final Point[] minos;
 
-    Tetromino(Point[] blocks) {
-        this.blocks = blocks;
+    Tetromino(Point[] mino) {
+        this.minos = mino;
     }
 
-    public Point[] getBlocks() {
-        Point[] copy = new Point[blocks.length];
-        for (int i = 0; i < blocks.length; i++) {
-            copy[i] = new Point(blocks[i]);
+    public Point[] getMinos() {
+        Point[] copy = new Point[minos.length];
+        for (int i = 0; i < minos.length; i++) {
+            copy[i] = new Point(minos[i]);
         }
         return copy;
     }

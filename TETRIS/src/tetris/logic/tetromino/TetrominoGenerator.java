@@ -66,7 +66,7 @@ public class TetrominoGenerator {
     	TetrominoState tetState = gameData.getTetrominoState();
     	
         initData();
-        tetState.setTetrominoCoords(tetState.getCurrentTetromino().getBlocks());
+        tetState.setTetrominoCoords(tetState.getCurrentTetromino().getMinos());
     }
 
     public void dumpState() {

@@ -42,7 +42,7 @@ public class HoldHandler {
 			heldTetromino = current;
 			tetState.setCurrentTetromino(temp);
 			tetState.setTetrominoOffset(new Point(3, BUFFER_ZONE - 1));
-			tetState.setTetrominoCoords(tetState.getCurrentTetromino().getBlocks());
+			tetState.setTetrominoCoords(tetState.getCurrentTetromino().getMinos());
 			gameEngine.getSpin().setSpinState(SpinState.S0);
 		}
 

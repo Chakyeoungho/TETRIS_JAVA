@@ -163,12 +163,12 @@ public class GameRenderer extends JFrame {
 
 		// Next block (Pocket)
 		Tetromino next = previewQueue[0];
-		drawBlocks(g, next.getBlocks(), POCKET_POS.x, POCKET_POS.y, TETROMINO_SIZE, tetImages, next.ordinal());
+		drawBlocks(g, next.getMinos(), POCKET_POS.x, POCKET_POS.y, TETROMINO_SIZE, tetImages, next.ordinal());
 
 		// Preview blocks (5 blocks)
 		for (int i = 1; i < 6; i++) {
 			Tetromino preview = previewQueue[i];
-			drawBlocks(g, preview.getBlocks(), PREVIEW_POS.x, PREVIEW_POS.y + PREVIEW_VERTICAL_SPACING * i,
+			drawBlocks(g, preview.getMinos(), PREVIEW_POS.x, PREVIEW_POS.y + PREVIEW_VERTICAL_SPACING * i,
 					TETROMINO_PREVIEW_SIZE, tetImages, preview.ordinal());
 		}
 	}
@@ -176,7 +176,7 @@ public class GameRenderer extends JFrame {
 	private void drawHoldBlock(Graphics g) {
 		Tetromino held = gameEngine.getHoldHandler().getHeldTetromino();
 		if (held != null) {
-			drawBlocks(g, held.getBlocks(), HOLD_POS.x, HOLD_POS.y, TETROMINO_SIZE, tetImages, held.ordinal());
+			drawBlocks(g, held.getMinos(), HOLD_POS.x, HOLD_POS.y, TETROMINO_SIZE, tetImages, held.ordinal());
 		}
 	}
 
