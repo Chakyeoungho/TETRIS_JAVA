@@ -2,6 +2,8 @@ package tetris.logic;
 
 import javax.swing.SwingUtilities;
 
+import tetris.data.constant.GameConstants.GameStateCode;
+import tetris.data.constant.SpinState;
 import tetris.data.constant.Tetromino;
 import tetris.logic.core.GameTimer;
 import tetris.logic.core.LockDelayTimer;
@@ -21,14 +23,14 @@ public class TetrisEngine {
 
 	// 필드 선언
 	private final DataManager gameData;
-	private final GameRenderer gameRenderer;
-	private final CollisionChecker collisionChecker;
 	private final ScoreManager gameScore;
-	private final TetrominoMover tetrominoMover;
+	private final CascadeHandler cascade;
+	private final CollisionChecker collisionChecker;
+	private final HoldHandler hold;
 	private final Spin spin;
 	private final TetrominoGenerator tetrominoGenerator;
-	private final HoldHandler hold;
-	private final CascadeHandler cascade;
+	private final TetrominoMover tetrominoMover;
+	private final GameRenderer gameRenderer;
 
 	private GameTimer gameTimer;
 	private final LockDelayTimer lockDelay;
@@ -39,13 +41,13 @@ public class TetrisEngine {
 	public TetrisEngine(DataManager gameData) {
 		this.gameData = gameData;
 
-		this.collisionChecker = new CollisionChecker(gameData);
 		this.gameScore = new ScoreManager(gameData, this);
-		this.tetrominoMover = new TetrominoMover(gameData, this);
-		this.spin = new Spin(gameData, this);
-		this.hold = new HoldHandler(gameData, this);
-		this.tetrominoGenerator = new TetrominoGenerator(gameData, this);
 		this.cascade = new CascadeHandler(gameData, gameScore);
+		this.collisionChecker = new CollisionChecker(gameData);
+		this.hold = new HoldHandler(gameData, this);
+		this.spin = new Spin(gameData, this);
+		this.tetrominoGenerator = new TetrominoGenerator(gameData, this);
+		this.tetrominoMover = new TetrominoMover(gameData, this);
 		this.gameRenderer = new GameRenderer(gameData, this);
 
 		this.lockDelay = new LockDelayTimer(() -> {
@@ -61,6 +63,7 @@ public class TetrisEngine {
 	// 퍼블릭 메서드
 
 	public void startTetris() {
+		gameData.getGameState().setCurrentState(GameStateCode.PLAYING);
 		tetrominoGenerator.generateTetromino();
 		SwingUtilities.invokeLater(() -> {
 			initGameTimer(INITIAL_DROP_INTERVAL);
@@ -72,10 +75,10 @@ public class TetrisEngine {
 		gameData.getGameState().pauseToggle();
 		if (gameTimer != null) {
 			if (isPaused()) {
-				gameTimer.stop();
+				stopMainTimer();
 				stopLockDelay();
 			} else {
-				gameTimer.start();
+				startMainTimer();
 			}
 		}
 	}
@@ -163,6 +166,12 @@ public class TetrisEngine {
 	}
 
 	private void tick() {
+		if (gameData.getGameState().getCurrentState() == GameStateCode.GAME_OVER) {
+			stopMainTimer();
+			stopLockDelay();
+			return;
+		}
+		
 		if (isPaused())
 			return;
 
@@ -188,5 +197,39 @@ public class TetrisEngine {
 		if (gameTimer != null) {
 			gameTimer.setIntervalNanos(time);
 		}
+	}
+	
+	public GameStateCode getCurrentState() { return gameData.getGameState().getCurrentState(); }
+	
+	private synchronized void resetGameData() {
+	    // 게임 상태 및 필드 초기화
+	    gameData.getGameState().setCurrentState(GameStateCode.READY);
+	    gameData.resetField();
+	    
+	    // 점수 및 스핀 상태 초기화
+	    getScoreManager().resetScoreData();
+	    getSpin().setSpinState(SpinState.S0);
+
+	    // 테트로미노 가방 및 생성기 상태 초기화
+	    gameData.getTetrominoBag().advanceBag();
+	    getTetrominoGenerator().resetCurrentPocketIndex();
+	    gameData.getTetrominoState().setCurrentTetromino(gameData.getTetrominoBag().getBagCopy()[0][0]);
+
+	    // 홀드 상태 초기화
+	    getHoldHandler().resetHeltTetromino();
+	    getHoldHandler().resetIsHoldUsed();
+
+	    // 타이머 및 락 딜레이 상태 초기화
+	    lockDelayMoveCounter = 0;
+	    stopMainTimer();
+	    stopLockDelay();
+	    initGameTimer(INITIAL_DROP_INTERVAL);
+	}
+
+	
+	public synchronized void restartGame() {
+		resetGameData();
+		startTetris();
+		getGameRenderer().refreshScreen();
 	}
 }

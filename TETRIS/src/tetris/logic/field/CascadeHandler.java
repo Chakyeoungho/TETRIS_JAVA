@@ -15,7 +15,7 @@ public class CascadeHandler {
 	private final ScoreManager gameScore;
 
 	private final static int TOTAL_Y_SIZE = BUFFER_ZONE + FIELD_Y_COUNT;
-	
+
 	private int clearedLine = 0;
 
 	public CascadeHandler(DataManager gameData, ScoreManager gameScore) {
@@ -32,12 +32,12 @@ public class CascadeHandler {
 			if (fieldData.getRowBlockCount()[y] == FIELD_X_COUNT) {
 				clearedLine++;
 				gameScore.increaseTotalClearedLine();
-		    } else if (clearedLine > 0 && y + clearedLine < TOTAL_Y_SIZE) {
-		        for (int x = 0; x < FIELD_X_COUNT; x++) {
-		            gameData.setCell(y + clearedLine, x, Tetromino.fromOrdinal(gameData.getCell(y, x)));
-		        }
-		        fieldData.shiftDownRowBlockCount(y, clearedLine);
-		    }
+			} else if (clearedLine > 0 && y + clearedLine < TOTAL_Y_SIZE) {
+				for (int x = 0; x < FIELD_X_COUNT; x++) {
+					gameData.setCell(y + clearedLine, x, Tetromino.fromOrdinal(gameData.getCell(y, x)));
+				}
+				fieldData.shiftDownRowBlockCount(y, clearedLine);
+			}
 			y--;
 		}
 
@@ -49,6 +49,8 @@ public class CascadeHandler {
 			}
 		}
 	}
-	
-	public int getClearedLine() { return clearedLine; }
+
+	public int getClearedLine() {
+		return clearedLine;
+	}
 }

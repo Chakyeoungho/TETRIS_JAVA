@@ -1,11 +1,11 @@
 package tetris.logic.tetromino;
 
 import static tetris.data.constant.GameConstants.BUFFER_ZONE;
-import static tetris.data.constant.GameConstants.STATE_GAME_OVER;
 import static tetris.data.constant.Tetromino.TETROMINO_TYPE_COUNT;
 
 import java.awt.Point;
 
+import tetris.data.constant.GameConstants.GameStateCode;
 import tetris.data.constant.SpinState;
 import tetris.data.constant.Tetromino;
 import tetris.data.dto.TetrominoState;
@@ -37,7 +37,6 @@ public class TetrominoGenerator {
             throw new IllegalStateException("Pocket 구조가 비정상입니다.");
         }
 
-        //System.out.println(currentPocketIndex);
         Tetromino next = pocket[0][currentPocketIndex];
 
         if (next == Tetromino.EMPTY) {
@@ -48,7 +47,12 @@ public class TetrominoGenerator {
         }
 
         tetState.setCurrentTetromino(next);
-        tetState.setTetrominoOffset(new Point(3, BUFFER_ZONE - 1));
+        tetState.setTetrominoOffset(new Point(3, BUFFER_ZONE - 3));
+        
+        if (!gameEngine.getCollisionChecker().canPlace(tetState.getTetrominoCoords(), tetState.getTetrominoOffset()))
+        	gameData.getGameState().setCurrentState(GameStateCode.GAME_OVER);
+        
+        gameEngine.getTetrominoMover().drop();
     }
 
     public void initData() {
@@ -63,13 +67,6 @@ public class TetrominoGenerator {
     	
         initData();
         tetState.setTetrominoCoords(tetState.getCurrentTetromino().getBlocks());
-
-		if (gameData.getPlayField().getRowBlockCount()[BUFFER_ZONE - 1] > 0) {
-			gameData.getGameState().setGameStateCode(STATE_GAME_OVER);
-			//gameEngine.getGameRenderer().setGameOverState();
-			gameEngine.getGameTimer().stop();
-			gameEngine.stopLockDelay();
-		}
     }
 
     public void dumpState() {
@@ -87,4 +84,5 @@ public class TetrominoGenerator {
     }
     
     public int getCurrentPocketIndex() { return currentPocketIndex; }
+    public void resetCurrentPocketIndex() { currentPocketIndex = TETROMINO_TYPE_COUNT; }
 }

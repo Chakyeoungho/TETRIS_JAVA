@@ -23,14 +23,10 @@ public class HoldHandler {
 		this.gameEngine = gameEngine;
 	}
 
-	public Tetromino getHeldTetromino() {
-		return heldTetromino;
-	}
-
-	public void resetIsHoldUsed() {
-		isHoldUsed = false;
-	}
-
+	public Tetromino getHeldTetromino() { return heldTetromino; }
+	public void resetIsHoldUsed() { isHoldUsed = false; }
+	public void resetHeltTetromino() { heldTetromino = EMPTY; }
+	
 	public void hold() {
 		var tetState = gameData.getTetrominoState();
 		Tetromino current = tetState.getCurrentTetromino();

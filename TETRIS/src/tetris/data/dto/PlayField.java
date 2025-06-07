@@ -48,8 +48,7 @@ public class PlayField {
     // 생성자: 객체 생성 시 플레이필드를 빈 칸(EMPTY_CELL)으로 초기화
     // Arrays.fill 메서드를 통해 각 행을 빈 칸 값으로 채움
     public PlayField() {
-        for (int y = 0; y < playfield.length; y++)
-            Arrays.fill(playfield[y], EMPTY_CELL);
+    	resetField();
     }
 
     // --- Public Method ---
@@ -61,6 +60,11 @@ public class PlayField {
     
     public void removeCell(int y, int x) {
     	playfield[y][x] = EMPTY_CELL;
+    }
+    
+    public void resetField() {
+        for (int y = 0; y < playfield.length; y++)
+            Arrays.fill(playfield[y], EMPTY_CELL);
     }
 
     // 공개 메서드: 읽기 전용 뷰를 반환하여 외부에 안전한 접근 경로 제공

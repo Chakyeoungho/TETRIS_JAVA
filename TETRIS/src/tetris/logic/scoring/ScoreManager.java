@@ -66,25 +66,18 @@ public class ScoreManager {
 	 * @param clearedLine 클리어된 줄 수
 	 */
 	private void checkTSpin(int clearedLine) {
-		boolean A = cornerState[0];
-		boolean B = cornerState[1];
-		boolean C = cornerState[2];
-		boolean D = cornerState[3];
+		boolean A = cornerState[0]; // 코너 값 위치 오프셋
+		boolean B = cornerState[1]; // A█B  C█A  D C  B█D
+		boolean C = cornerState[2]; // ███   ██  ███  ██
+		boolean D = cornerState[3]; // C D  D█B  B█A  A█C
 
+		// SRS 체크 인덱스가 5 이어야 한다
 		if (gameEngine.getSpin().getSpinPoint() == 5 && (A && B) && (C || D)) {
 			switch (clearedLine) {
-			case 0:
-				lastScoreAction = ScoreAction.T_SPIN;
-				break;
-			case 1:
-				lastScoreAction = ScoreAction.T_SPIN_SINGLE;
-				break;
-			case 2:
-				lastScoreAction = ScoreAction.T_SPIN_DOUBLE;
-				break;
-			case 3:
-				lastScoreAction = ScoreAction.T_SPIN_TRIPLE;
-				break;
+			case 0:	lastScoreAction = ScoreAction.T_SPIN; break;
+			case 1:	lastScoreAction = ScoreAction.T_SPIN_SINGLE; break;
+			case 2:	lastScoreAction = ScoreAction.T_SPIN_DOUBLE; break;
+			case 3:	lastScoreAction = ScoreAction.T_SPIN_TRIPLE; break;
 			default:
 				System.err.println("Warning: Unexpected clearedLine for T-Spin: " + clearedLine);
 				lastScoreAction = ScoreAction.T_SPIN;
@@ -92,12 +85,8 @@ public class ScoreManager {
 			}
 		} else if ((C && D) && (A || B)) {
 			switch (clearedLine) {
-			case 0:
-				lastScoreAction = ScoreAction.MINI_T_SPIN;
-				break;
-			case 1:
-				lastScoreAction = ScoreAction.MINI_T_SPIN_SINGLE;
-				break;
+			case 0:	lastScoreAction = ScoreAction.MINI_T_SPIN; break;
+			case 1:	lastScoreAction = ScoreAction.MINI_T_SPIN_SINGLE; break;
 			default:
 				System.err.println("Warning: Unexpected clearedLine for Mini T-Spin: " + clearedLine);
 				lastScoreAction = ScoreAction.MINI_T_SPIN;
@@ -108,6 +97,25 @@ public class ScoreManager {
 			tSpinCount--;
 		}
 		tSpinCount++;
+	}
+
+	/**
+	 * 레벨 업데이트: 클리어한 줄 수에 따라 레벨 상승 적용 (최대 15)
+	 * 
+	 * @param clearedLine 이번 액션으로 클리어한 줄 수
+	 */
+	private void updateLevel(int clearedLine) {
+		if (clearedLine > 0) {
+			int preLevel = getLevel();
+			totalClearedLine += clearedLine;
+			int currentLevel = Math.min(totalClearedLine / 10 + 1, 15);
+			setLevel(currentLevel);
+
+			if (currentLevel > preLevel) {
+				long nextTime = gameEngine.getDropTime(currentLevel);
+				gameEngine.setIntervalNanos(nextTime);
+			}
+		}
 	}
 
 	public synchronized void updateHardDropScore() {
@@ -123,9 +131,8 @@ public class ScoreManager {
 	public synchronized void updateScore(int clearedLine) {
 		// T-Spin 판정을 위한 조건:
 		// 1) 마지막 동작이 스핀이어야 하고,
-		// 2) Spin 점수가 5 (T-Spin 기준점) 이어야 하며,
-		// 3) 현재 테트로미노가 T여야 한다.
-		if (gameData.getTetrominoState().getCurrentTetromino() == Tetromino.T && lastActionWasSpin) {
+		// 2) 현재 테트로미노가 T여야 한다.
+		if (lastActionWasSpin && gameData.getTetrominoState().getCurrentTetromino() == Tetromino.T) {
 			checkTSpin(clearedLine);
 		} else {
 			lastScoreAction = ScoreAction.NOTHING;
@@ -169,6 +176,7 @@ public class ScoreManager {
 		case 4:
 			increaseScore(level * ScoreAction.TETRIS.getBaseScore());
 			lastScoreAction = ScoreAction.TETRIS;
+			tetrisCount++;
 			break;
 		default:
 			System.err.println("Warning: Unexpected clearedLine: " + clearedLine);
@@ -177,31 +185,13 @@ public class ScoreManager {
 		// 회전 플래그 초기화
 		clearLastActionSpinFlag();
 		updateComboAndB2B(clearedLine);
+		updateLevel(clearedLine);
 	}
 
 	public int getLevel() {return level; }
 	public void setLevel(int level) { this.level = level; }
 
 	public ScoreAction getLastAction() { return lastScoreAction; }
-
-	/**
-	 * 레벨 업데이트: 클리어한 줄 수에 따라 레벨 상승 적용 (최대 15)
-	 * 
-	 * @param clearedLine 이번 액션으로 클리어한 줄 수
-	 */
-	public void updateLevel(int clearedLine) {
-		if (clearedLine > 0) {
-			int preLevel = getLevel();
-			totalClearedLine += clearedLine;
-			int currentLevel = Math.min(totalClearedLine / 10 + 1, 15);
-			setLevel(currentLevel);
-
-			if (currentLevel > preLevel) {
-				long nextTime = gameEngine.getDropTime(currentLevel);
-				gameEngine.setIntervalNanos(nextTime);
-			}
-		}
-	}
 
 	public long getScore() { return score; }
 	public synchronized void increaseScore(long score) { this.score += score; }
@@ -247,12 +237,14 @@ public class ScoreManager {
 	/**
 	 * 게임 초기화용 전체 리셋 메서드
 	 */
-	public void resetAll() {
+	public void resetScoreData() {
 		lastScoreAction = ScoreAction.NOTHING;
 		score = 0;
 		level = 1;
 		totalClearedLine = 0;
 		combo = 0;
+		tetrisCount = 0;
+		tSpinCount = 0;
 		isSoftDrop = false;
 		lastActionWasSpin = false;
 		isB2BCombo = false;

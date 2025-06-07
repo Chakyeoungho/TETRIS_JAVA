@@ -1,20 +1,24 @@
-// 변수 정의만 분리한 클래스
 package tetris.data.dto;
 
-import static tetris.data.constant.GameConstants.STATE_PROCESSING;
+import tetris.data.constant.GameConstants.GameStateCode;
 
 public class GameState {
-    // --- 게임 진행 상태 ---
-    private int gameStateCode = STATE_PROCESSING;
+    private GameStateCode currentState = GameStateCode.READY;
 
-    private volatile boolean paused = false;
+    public void togglePause() {
+        if (currentState == GameStateCode.PLAYING) {
+            currentState = GameStateCode.PAUSED;
+        } else if (currentState == GameStateCode.PAUSED) {
+            currentState = GameStateCode.PLAYING;
+        }
+    }
 
-    // --- Getters & Setters ---
-
-    // 게임 진행 상태
-    public int getGameStateCode() { return gameStateCode; }
-    public void setGameStateCode(int gameStateCode) { this.gameStateCode = gameStateCode; }
+    public GameStateCode getCurrentState() { return currentState; }
+    public void setCurrentState(GameStateCode state) { this.currentState = state; }
     
-    public boolean isPaused() { return paused; }
-    public void pauseToggle() { paused = !paused; }
+    public boolean isPaused() { return currentState == GameStateCode.PAUSED; }
+    public void pauseToggle() {
+    	if (currentState == GameStateCode.PAUSED) currentState = GameStateCode.PLAYING;
+    	else currentState = GameStateCode.PAUSED;
+    }
 }

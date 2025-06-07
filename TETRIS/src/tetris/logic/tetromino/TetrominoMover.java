@@ -1,7 +1,10 @@
 package tetris.logic.tetromino;
 
+import static tetris.data.constant.GameConstants.BUFFER_ZONE;
+
 import java.awt.Point;
 
+import tetris.data.constant.GameConstants.GameStateCode;
 import tetris.data.constant.Tetromino;
 import tetris.logic.TetrisEngine;
 import tetris.logic.data.DataManager;
@@ -37,6 +40,7 @@ public class TetrominoMover {
 		var scoreManager = gameEngine.getScoreManager();
 		Point[] coords = gameData.getTetrominoState().getTetrominoCoords();
 		Point offset = gameData.getTetrominoState().getTetrominoOffset();
+		int countLockOutMino = 0;
 		
 		placeTetrominoOnField(coords, offset);
 		updateRowBlockCounts(coords, offset);
@@ -45,6 +49,10 @@ public class TetrominoMover {
 		scoreManager.updateScore(cascadeHandler.getClearedLine());
 		
 		gameEngine.resetLockDelayCounter();
+
+		for (Point p : coords)
+			if (p.y + offset.y < BUFFER_ZONE) countLockOutMino++;
+		if (countLockOutMino == 4) gameData.getGameState().setCurrentState(GameStateCode.GAME_OVER);
 	}
 
 	public Point getHardDropOffset() {

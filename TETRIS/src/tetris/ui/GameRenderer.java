@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import tetris.data.constant.GameConstants.GameStateCode;
 import tetris.data.constant.Tetromino;
 import tetris.logic.TetrisEngine;
 import tetris.logic.data.DataManager;
@@ -49,6 +50,9 @@ public class GameRenderer extends JFrame {
 	private static final int POCKET_BG_HEIGHT = 80;
 	private static final int PREVIEW_BG_WIDTH = 100;
 	private static final int PREVIEW_BG_HEIGHT = PREVIEW_VERTICAL_SPACING * 5 + 10;
+	
+	// UI 정보 좌표
+	private static final int INFO_Y_POS = 20;
 
 	public GameRenderer(DataManager gameData, TetrisEngine gameEngine) {
 		super("TETRIS");
@@ -181,33 +185,47 @@ public class GameRenderer extends JFrame {
 		g.setColor(Color.BLACK);
 
 		if (gameData.getGameState().isPaused()) {
-			g.drawString("-- PAUSE --", 188, 100);
+			g.drawString("-- PAUSE --", 254, 100);
 		}
 
 		g.setFont(new Font("Consolas", Font.BOLD, 18));
 
 		long score = gameEngine.getScoreManager().getScore();
-		int level = gameEngine.getScoreManager().getLevel();
+		long playTime = 0;
 		int linesCleared = gameEngine.getScoreManager().getTotalClearedLine();
+		int level = gameEngine.getScoreManager().getLevel();
 		int goal = 10 - (linesCleared % 10);
-		ScoreAction lastAction = gameEngine.getScoreManager().getLastAction();
+		int tetrinCount = gameEngine.getScoreManager().getTetrisCount();
+		int tSpinCount = gameEngine.getScoreManager().getTSpinCount();
 		int comboCount = gameEngine.getScoreManager().getComboCount();
+		ScoreAction lastAction = gameEngine.getScoreManager().getLastAction();
 		boolean isB2B = gameEngine.getScoreManager().getIsB2B();
 
-		g.drawString("Score: ", 10, 200);
-		g.drawString(String.valueOf(score), 120, 225);
-		g.drawString("Lines: " + linesCleared, 10, 260);
-		g.drawString("Level: " + level, 10, 280);
-		g.drawString("Goal: " + goal, 10, 300);
-		g.drawString("LastAction: ", 10, 330);
-		g.drawString(" " + lastAction, 10, 350);
-		g.drawString("Combo: " + comboCount, 10, 380);
-		g.drawString("B2B Combo: " + isB2B, 10, 400);
+		g.drawString("SCORE:", INFO_Y_POS, 150);
+		g.drawString(String.valueOf(score), 20, 175);
+		g.drawString("TIME:", INFO_Y_POS, 200);
+		g.drawString("123123test" + playTime, INFO_Y_POS, 225);
+		g.drawString("LINES:      " + linesCleared, INFO_Y_POS, 260);
+		g.drawString("LEVEL:      " + level, INFO_Y_POS, 280);
+		g.drawString("GOAL:       " + goal, INFO_Y_POS, 300);
+		g.drawString("TETRISES:   " + tetrinCount, INFO_Y_POS, 340);
+		g.drawString("T-SPINS:    " + tSpinCount, INFO_Y_POS, 360);
+		g.drawString("COMBOS:     " + comboCount, INFO_Y_POS, 380);
+		g.drawString("LastAction: ", INFO_Y_POS, 420);
+		g.drawString("" + lastAction, INFO_Y_POS, 440);
+		g.drawString("B2B Combo: " + isB2B, INFO_Y_POS, 465);
+		
+		g.drawString("GAMESTATE: ", INFO_Y_POS - 10, 520);
+		g.drawString("" + gameData.getGameState().getCurrentState(), 20, 545);
+		
+		g.setFont(new Font("Consolas", Font.BOLD, 30));
+		if (gameData.getGameState().getCurrentState() == GameStateCode.GAME_OVER)
+			g.drawString("Press R to Restart Game", 150, 145);
 	}
 
 	private void debugPrint(Point[] coords, Tetromino current, Point ghostOffset, Point currentOffset) {
-		if (!DEBUG)
-			return;
+		if (!DEBUG) return;
+		
 		System.out.println("===== Debug Info =====");
 		System.out.println("Current Tetromino: " + current);
 		System.out.println("Ghost Offset: " + ghostOffset);
