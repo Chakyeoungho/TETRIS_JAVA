@@ -204,7 +204,7 @@ public class GameRenderer extends JFrame {
 		g.drawString("SCORE:", INFO_Y_POS, 150);
 		g.drawString(String.valueOf(score), 20, 175);
 		g.drawString("TIME:", INFO_Y_POS, 200);
-		g.drawString("123123test" + playTime, INFO_Y_POS, 225);
+		g.drawString("testtesttest" + playTime, INFO_Y_POS, 225); // TODO
 		g.drawString("LINES:      " + linesCleared, INFO_Y_POS, 260);
 		g.drawString("LEVEL:      " + level, INFO_Y_POS, 280);
 		g.drawString("GOAL:       " + goal, INFO_Y_POS, 300);
