@@ -119,3 +119,7 @@
 1.  **리팩토링**: `lockTetromino()`의 로직을 **옵저버 패턴(Observer Pattern)**을 도입하여 '블록 고정 이벤트' 발생 시 각 컴포넌트가 독립적으로 반응하도록 구조를 개선하겠습니다.
 2.  **반응형 UI**: Swing의 `LayoutManager`를 적용하여 창 크기 변화에 유동적으로 대응하는 UI를 구현하겠습니다.
 3.  **기능 추가**: DAS 기능과 플레이 시간 측정 등을 위해 타이머 시스템을 추상화하고 확장하겠습니다. 최종적으로는 온라인 멀티플레이 기능 구현을 시도해보고자 합니다.
+4.  
+
+### 컴포넌트 다이어그램
+|https://www.mermaidchart.com/app/projects/f24a7463-d14f-4d43-83f9-1df25be31334/diagrams/6c9f6a75-a36d-498a-beac-f9119c30b8c3/share/invite/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudElEIjoiNmM5ZjZhNzUtYTM2ZC00OThhLWJlYWMtZjkxMTljMzBiOGMzIiwiYWNjZXNzIjoiVmlldyIsImlhdCI6MTc0OTM5OTI1MX0.-VJIJUO_VfhS1vg4bMOQl5ZI5Es-aMXB-7H8HQ-EppA|
