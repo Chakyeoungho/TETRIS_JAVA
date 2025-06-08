@@ -68,7 +68,7 @@
 |![Image](https://github.com/user-attachments/assets/628fe738-38cb-4c56-a9f1-f322903e684a)|![Image](https://github.com/user-attachments/assets/fbe190f4-043d-467a-8cdd-3f53d3275e94)|
 |![Image](https://github.com/user-attachments/assets/df6a7949-9cd2-459c-b7c5-c18256174401)|![Image](https://github.com/user-attachments/assets/95099264-f731-4bf7-a234-c16307bc85af)|
 | *T-Spin Triple 성공 시 1600점 획득 및 B2B 활성화*          | *연속 테트리스 성공 시 B2B 보너스(1.5배) 적용 (800점 → 1200점)* |
-| *score: 1992 - 392 = 1600*|*3618 - 2418 = 1200 (800 * 1.5)*|
+| *Score: 1992 - 392 = 1600*|*Score: 3618 - 2418 = 1200 (800 * 1.5)*|
 
 
 ## 🚀 빌드 및 실행 방법
