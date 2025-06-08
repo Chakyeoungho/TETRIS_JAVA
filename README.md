@@ -122,4 +122,4 @@
 4.  
 
 ### 컴포넌트 다이어그램
-|https://www.mermaidchart.com/app/projects/f24a7463-d14f-4d43-83f9-1df25be31334/diagrams/6c9f6a75-a36d-498a-beac-f9119c30b8c3/share/invite/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudElEIjoiNmM5ZjZhNzUtYTM2ZC00OThhLWJlYWMtZjkxMTljMzBiOGMzIiwiYWNjZXNzIjoiVmlldyIsImlhdCI6MTc0OTM5OTI1MX0.-VJIJUO_VfhS1vg4bMOQl5ZI5Es-aMXB-7H8HQ-EppA|
+https://www.mermaidchart.com/app/projects/f24a7463-d14f-4d43-83f9-1df25be31334/diagrams/6c9f6a75-a36d-498a-beac-f9119c30b8c3/share/invite/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudElEIjoiNmM5ZjZhNzUtYTM2ZC00OThhLWJlYWMtZjkxMTljMzBiOGMzIiwiYWNjZXNzIjoiVmlldyIsImlhdCI6MTc0OTM5OTI1MX0.-VJIJUO_VfhS1vg4bMOQl5ZI5Es-aMXB-7H8HQ-EppA
